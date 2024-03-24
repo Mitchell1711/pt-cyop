@@ -2,16 +2,15 @@ draw_sprite(_spr("modtitle"), 0, obj_screensizer.actual_width / 2, 64);
 //img gonna do everything here fuck you
 if (!menuLock and !instance_exists(obj_towerBrowser))
 {
-    scr_getinput()
+    scr_menu_getinput()
 }
 else
 {
     key_down2 = false;
     key_up2 = false;
-    key_jump2 = false;
-    key_taunt2 = false;
-    key_slap2 = false;
-    key_escape = false;
+    key_jump = false;
+    key_delete2 = false;
+    key_quit2 = false;
 }
 
 var vmove = (key_down2 - key_up2)
@@ -40,7 +39,7 @@ if (vmove != 0)
     global.towerSelected = towerSelected
 }
 
-if (key_jump2)
+if (key_jump)
 {
     var t = towerSelected
     if (towerSelected < min(array_length(towerList), tMax + 1))
@@ -128,7 +127,7 @@ if (key_jump2)
     }
 }
 
-if (key_taunt2)
+if (key_delete2)
 {
     var t = towerSelected
     if (towerSelected < array_length(towerList))
@@ -472,7 +471,7 @@ for (var cind = 0; cind < array_length(w_openCanvas); cind ++)
     }
 }
 
-if key_slap2 or key_escape
+if key_quit2
 {
     if (obj_music.music != noone)
         fmod_event_instance_play(obj_music.music.event);

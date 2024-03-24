@@ -11,7 +11,7 @@ var noob = !file_exists("version");
 ini_open("version")
 var v = ini_read_string("data", "version", "");
 
-if (v != currentVersion or !directory_exists(game_save_id + "editor_assets") or !file_exists(game_save_id + "editor_assets/objects.json"))
+if (v != currentVersion || !directory_exists("editor_assets") || !file_exists("editor_assets/objects.json"))
 {
     //show_message_async("Extracting mod assets, this may take a while...")
     var q = show_message("Hey! \"Create Your Own Pizza\" mod assets will need to be extracted, which may take a while. This will only happen the first time you open the mod/after an update.\n\nPress OK to continue")
@@ -128,7 +128,7 @@ if (v != currentVersion or !directory_exists(game_save_id + "editor_assets") or 
     ini_write_string("data", "version", currentVersion)
 }
 ini_close();
-if (!directory_exists(game_save_id + "editor_assets") or !file_exists(game_save_id + "editor_assets/objects.json"))
+if (!directory_exists("editor_assets") or !file_exists("editor_assets/objects.json"))
 {
     show_message("editor_assets folder is missing from appdata, or data was not extracted successfully. Try re-installing the mod and opening the game again.")
     game_end();
@@ -183,9 +183,14 @@ global.towerSelected = 0;
 global.editingLevel = false;
 global.editorLevelName = "";
 
+global.surfaceDestroyer = [];
+global.surfaceRoomEnd = [];
+
 global.secretRoomFix = ["main", 0] // yeah
 
 global.objectData = json_parse(file_text_read_all(editor_folder("objects.json")));
+//object ids got shuffled around with the new update
+global.objectMap = json_parse(file_text_read_all(editor_folder("objectCompatibility.json")))
 
 if (!variable_struct_exists(global.objectData, "variableTypes"))
 {
@@ -309,15 +314,12 @@ function switchAssetFolder(argument0)
     
     //defautls
     global.editorfont = font_add_sprite_ext(_spr("smallfont"), "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789?!.:-<>()_{},[]/\"´¨", false, -1)
-    object_set_sprite(obj_sprite, _spr("sprite_preview"));
-    object_set_sprite(obj_camera_region, _spr("z_oldeditor/spr_camera"));
-    object_set_sprite(obj_warp_number, _spr("warp_number"));
-    object_set_sprite(obj_destroyable3_escape, _spr("z_oldeditor/escape_destroyable3"));
+    /* object_set_sprite(obj_sprite, _spr("sprite_preview"))
+    object_set_sprite(obj_camera_region, _spr("z_oldeditor/spr_camera"))
+    object_set_sprite(obj_warp_number, _spr("warp_number"))
+    object_set_sprite(obj_destroyable3_escape, _spr("z_oldeditor/escape_destroyable3")) */
 }
 switchAssetFolder("");
-
-global.surfaceDestroyer = [];
-global.surfaceRoomEnd = [];
 
 instance_create(x, y, obj_customAudio);
 

@@ -20,49 +20,53 @@ for (var i = 0; i < array_length(data.instances); i ++)
     {
         var l = _stGet("insData.layer");
         layerConfirm("Instances", l);
-        var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), _stGet("insData.object"))
-        
-        instanceManager_checkAndSwitch(i, ins);
-        
-        ins.flipX = false;
-        ins.flipY = false;
-        
-        ins.targetRoom = "main";
-        
-        var varNames = variable_struct_get_names(struct_get(insData, "variables"));
-        for (var j = 0; j < array_length(varNames); j ++)
-        {
-            if (varNames[j] != "x" and varNames[j] != "y")
-                variable_instance_set(ins, varNames[j], varValue_ressolve(struct_get(struct_get(insData, "variables"), varNames[j]), varName_getType(varNames[j])));
-        }
-        ins.instID = i;
-        
-        if (!variable_instance_exists(ins, "escape"))
-        {
-            ins.escape = false;
-        }
-        if (variable_instance_exists(ins, "useLayerDepth"))
-        {
-            array_push(layerForce, [ins, layer_get_id(layerFormat("Instances", l))]);
-        }
-        
-        array_push(roomInsts, [ins.id, i, ins.object_index, ins.escape]);
-        if (ins.escape or array_value_exists(struct_get(global.objectData, "respawnOnLap2"), object_get_name(ins.object_index)))
-        {
-            struct_set(respawnOnLap2, [[string(i), "true"]])
-        }
-        
-        if (ins.flipX)
-        {
-            var horDifference = sprite_get_width(ins.sprite_index) - sprite_get_xoffset(ins.sprite_index) * 2;
-            ins.x += horDifference * ins.image_xscale;
-            ins.image_xscale *= -1;
-        }
-        if (ins.flipY)
-        {
-            var verDifference = sprite_get_height(ins.sprite_index) - sprite_get_yoffset(ins.sprite_index) * 2;
-            ins.y += verDifference * ins.image_yscale;
-            ins.image_yscale *= -1;
+        var objIndex = _stGet("insData.object")
+        //make object ids from previous versions compatible with the current one
+        objIndex = asset_get_index(global.objectMap[objIndex])
+        var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), objIndex)
+        if(instance_exists(ins)){
+            instanceManager_checkAndSwitch(i, ins);
+            
+            ins.flipX = false;
+            ins.flipY = false;
+            
+            ins.targetRoom = "main";
+            
+            var varNames = variable_struct_get_names(struct_get(insData, "variables"));
+            for (var j = 0; j < array_length(varNames); j ++)
+            {
+                if (varNames[j] != "x" and varNames[j] != "y")
+                    variable_instance_set(ins, varNames[j], varValue_ressolve(struct_get(struct_get(insData, "variables"), varNames[j]), varName_getType(varNames[j])));
+            }
+            ins.instID = i;
+            
+            if (!variable_instance_exists(ins, "escape"))
+            {
+                ins.escape = false;
+            }
+            if (variable_instance_exists(ins, "useLayerDepth"))
+            {
+                array_push(layerForce, [ins, layer_get_id(layerFormat("Instances", l))]);
+            }
+            
+            array_push(roomInsts, [ins.id, i, ins.object_index, ins.escape]);
+            if (ins.escape or array_value_exists(struct_get(global.objectData, "respawnOnLap2"), object_get_name(ins.object_index)))
+            {
+                struct_set(respawnOnLap2, [[string(i), "true"]])
+            }
+            
+            if (ins.flipX)
+            {
+                var horDifference = sprite_get_width(ins.sprite_index) - sprite_get_xoffset(ins.sprite_index) * 2;
+                ins.x += horDifference * ins.image_xscale;
+                ins.image_xscale *= -1;
+            }
+            if (ins.flipY)
+            {
+                var verDifference = sprite_get_height(ins.sprite_index) - sprite_get_yoffset(ins.sprite_index) * 2;
+                ins.y += verDifference * ins.image_yscale;
+                ins.image_yscale *= -1;
+            }
         }
     }
 }
