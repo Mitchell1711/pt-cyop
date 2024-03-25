@@ -1,6 +1,5 @@
 if (room == rm_editor)
-{
-}
+    return;
 if (ds_list_find_index(global.saveroom, id) == -1 && global.snickchallenge == 0)
 {
     if (room == tower_finalhallway)
@@ -27,67 +26,75 @@ if (ds_list_find_index(global.saveroom, id) == -1 && global.snickchallenge == 0)
         case entrance_10:
             global.fill = 1860
             break
-        case 53:
+        case medieval_10:
             global.fill = 2040
             break
-        case 69:
-            global.fill = 2040
+        case ruin_11:
+            global.fill = 2160
             break
-        case 88:
+        case dungeon_10:
             global.fill = 2460
             break
-        case 729:
+        case badland_9:
             global.fill = 2556
             break
-        case 131:
+        case graveyard_6:
             global.fill = 2640
             break
-        case 152:
+        case farm_11:
             global.fill = 1920
             break
-        case 697:
+        case saloon_6:
             global.fill = 2100
             break
-        case 715:
+        case plage_cavern2:
             global.fill = 2220
             break
-        case 703:
+        case forest_john:
             global.fill = 2520
             break
-        case 368:
+        case space_9:
             global.fill = 2220
             break
-        case 237:
+        case minigolf_8:
             global.fill = 3240
             break
-        case 685:
+        case street_john:
             global.fill = 2280
             break
-        case 384:
+        case sewer_8:
             global.fill = 3300
             var lay = layer_get_id("Backgrounds_scroll")
             layer_set_visible(lay, 1)
             break
-        case 831:
+        case industrial_5:
             global.fill = 2760
             break
-        case 459:
+        case freezer_escape1:
             global.fill = 2640
             break
-        case 257:
+        case chateau_9:
             lay = layer_get_id("Backgrounds_stillH1")
-            layer_background_sprite(layer_background_get_id(lay), 3198)
+            layer_background_sprite(layer_background_get_id(lay), spr_chateaudarkbg_escape)
             global.fill = 2520
             break
-        case 609:
+        case kidsparty_john:
             global.fill = 2460
             break
-        case 739:
+        case tower_finalhallway:
             global.fill = 4056
             break
     }
 
-    instance_create_unique(0, 0, 346)
+    with (instance_create(x, y, obj_sausageman_dead))
+    {
+        var debris = id
+        sprite_index = spr_hungrypillar_dead
+        if (room == tower_finalhallway)
+            sprite_index = spr_protojohn
+    }
+    with (instance_create_unique(0, 0, obj_hungrypillarflash))
+        debrisid = debris
     with (obj_tv)
         chunkmax = global.fill
     with (obj_escapecollect)
@@ -120,12 +127,6 @@ if (ds_list_find_index(global.saveroom, id) == -1 && global.snickchallenge == 0)
         shake_mag_acc = (3 / room_speed)
     }
     instance_destroy()
-    with (instance_create(x, y, obj_sausageman_dead))
-    {
-        sprite_index = spr_hungrypillar_dead
-        if (room == tower_finalhallway)
-            sprite_index = spr_protojohn
-    }
     fmod_event_one_shot_3d("event:/sfx/enemies/kill", x, y)
     instance_create(x, (y + 600), obj_itspizzatime)
     global.panic = 1
@@ -135,95 +136,95 @@ if (ds_list_find_index(global.saveroom, id) == -1 && global.snickchallenge == 0)
             global.minutes = 2
             global.seconds = 30
             break
-        case 53:
+        case medieval_10:
             global.minutes = 2
             global.seconds = 15
             break
-        case 69:
+        case ruin_11:
             global.minutes = 2
             global.seconds = 59
             break
-        case 88:
+        case dungeon_10:
             global.minutes = 4
             global.seconds = 30
             break
-        case 253:
+        case chateau_6:
             global.minutes = 3
             global.seconds = 15
             break
-        case 259:
+        case strongcold_1:
             global.minutes = 4
             global.seconds = 0
             break
-        case 90:
+        case dragonlair_1:
             global.minutes = 0
             global.seconds = 59
             break
-        case 549:
+        case desert_16:
             global.minutes = 2
             global.seconds = 30
             break
-        case 131:
+        case graveyard_6:
             global.minutes = 3
             global.seconds = 59
             break
-        case 152:
+        case farm_11:
             global.minutes = 3
             global.seconds = 59
             break
-        case 227:
+        case pinball_17:
             global.minutes = 3
             global.seconds = 12
             break
-        case 193:
+        case beach_13:
             global.minutes = 3
             global.seconds = 30
             break
-        case 199:
+        case forest_5:
             global.minutes = 3
             global.seconds = 30
             break
-        case 237:
+        case minigolf_8:
             global.minutes = 7
             global.seconds = 30
             break
-        case 368:
+        case space_9:
             global.minutes = 5
             global.seconds = 30
             break
-        case 384:
+        case sewer_8:
             global.minutes = 5
             global.seconds = 30
             break
-        case 400:
+        case city_11:
             global.minutes = 5
             global.seconds = 30
             break
-        case 411:
+        case mansion_7:
             global.minutes = 5
             global.seconds = 30
             break
-        case 433:
+        case factory_10:
             global.minutes = 6
             global.seconds = 30
             break
-        case 443:
+        case freezer_3:
             global.minutes = 5
             global.seconds = 30
             break
-        case 526:
+        case war_1:
             global.minutes = 6
             global.seconds = 30
             break
-        case 506:
+        case exit_1:
             global.minutes = 9
             global.seconds = 59
             break
-        case 499:
+        case kidsparty_lastroom:
             global.minutes = 3
             global.seconds = 30
             break
-        case 360:
+        case custom_lvl_room:
             global.minutes = 2
             global.seconds = 15
             break

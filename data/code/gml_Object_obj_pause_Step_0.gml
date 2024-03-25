@@ -200,6 +200,13 @@ border2_xstart = obj_screensizer.actual_width
 border2_ystart = obj_screensizer.actual_height
 border2_xend = (obj_screensizer.actual_width + 96)
 border2_yend = (obj_screensizer.actual_height + 100)
+if is_holiday((1 << 0))
+{
+    border1_xend = -128
+    border1_yend = (obj_screensizer.actual_height + 150)
+    border2_xend = (obj_screensizer.actual_width + 128)
+    border2_yend = (obj_screensizer.actual_height + 150)
+}
 vine_ystart = 0
 vine_yend = -117
 if (!start)
@@ -240,27 +247,28 @@ if (!instance_exists(obj_loadingscreen))
 cursor_index += 0.35
 pause_update_priests()
 var prevpause = pause
-if (pause && (!instance_exists(obj_option)) && alarm[3] == -1)
+if (pause && (!instance_exists(obj_option)) && (!instance_exists(obj_achievement_pause)) && alarm[3] == -1)
 {
-    scr_getinput()
+    scr_menu_getinput()
     var _dvc = obj_inputAssigner.player_input_device[0]
-    if (key_jump && _dvc >= 0 && gamepad_button_check_pressed(_dvc, global.key_jumpC) && global.key_jumpC == 32770)
-        key_jump = 0
-    key_jump = (key_jump || (global.key_start != 13 && keyboard_check_pressed(vk_return)) || (global.key_start != 32 && keyboard_check_pressed(vk_space)) || gamepad_button_check_pressed(obj_inputAssigner.player_input_device[0], gp_face1))
-    key_back = (keyboard_check_pressed(vk_escape) || keyboard_check_pressed(vk_return) || gamepad_button_check_pressed(obj_inputAssigner.player_input_device[0], gp_face2) || gamepad_button_check_pressed(obj_inputAssigner.player_input_device[0], gp_start))
+    key_back = (key_back || key_start)
     if (backbuffer > 0)
     {
         backbuffer--
         key_back = 0
     }
     moveselect = ((-key_up2) + key_down2)
+    var prevselect = selected
     selected += moveselect
-    if (moveselect != 0 && selected >= 0 && selected <= 3)
+    if (selected >= array_length(pause_menu))
+        selected = 0
+    else if (selected < 0)
+        selected = (array_length(pause_menu) - 1)
+    if (prevselect != selected)
     {
         fmod_event_one_shot("event:/sfx/ui/angelmove")
         update_cursor = 1
     }
-    selected = clamp(selected, 0, (array_length(pause_menu) - 1))
     if key_back
     {
         selected = 0
