@@ -219,7 +219,9 @@ function initInst(argument0) //gml_Script_initInst
     
     //show_message("here good?")
     var ins = instance_create_layer(struct_get(struct_get(insData, "variables"), "x"), struct_get(struct_get(insData, "variables"), "y"), layer_get_id(layerFormat("Instances", l)), obj_editorInst)
-    ins.sprite_index = object_get_sprite(struct_get(insData, "object"))
+    var obj = struct_get(insData, "object")
+    obj = asset_get_index(global.objectMap[obj])
+    ins.sprite_index = object_get_sprite(obj)
     ins.instID = argument0
     
     instance_update_variables(ins, insData);

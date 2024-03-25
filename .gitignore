@@ -9,3 +9,5 @@ sound/*
 *.temp
 credits.txt
 noisecredits.txt
+*.lnk
+MyMod.gamelog.txt

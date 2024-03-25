@@ -1,5 +1,5 @@
 var r = string_letters(room_get_name(room))
-if (r != "towertutorial" && string_copy(r, 1, 5) == "tower")
+if (r != "towertutorial" && r != "towertutorialN" && string_copy(r, 1, 5) == "tower")
 {
     timer_tower = 1
     if global.panic
@@ -109,74 +109,77 @@ switch room
     case entrance_1:
         global.srank = 16000
         break
-    case 39:
+    case medieval_1:
         global.srank = 20000
         break
-    case 54:
+    case ruin_1:
         global.srank = 17000
         break
-    case 71:
+    case dungeon_1:
         global.srank = 18500
         break
-    case 719:
+    case badland_1:
         global.srank = 19500
         break
-    case 123:
+    case graveyard_1:
         global.srank = 20500
         break
-    case 687:
+    case saloon_1:
         global.srank = 20000
         break
-    case 138:
+    case farm_2:
         global.srank = 19000
         break
-    case 706:
+    case plage_entrance:
         global.srank = 23000
         break
-    case 194:
+    case forest_1:
         global.srank = 19000
         break
-    case 241:
+    case space_1:
         global.srank = 20000
         break
-    case 229:
+    case minigolf_1:
         global.srank = 23000
         break
-    case 559:
+    case street_intro:
         global.srank = 20000
         break
-    case 830:
+    case sewer_1:
         global.srank = 20000
         break
-    case 672:
+    case industrial_1:
         global.srank = 20000
         break
-    case 441:
+    case freezer_1:
         global.srank = 18200
         break
-    case 244:
+    case chateau_1:
         global.srank = 18000
         break
-    case 596:
+    case kidsparty_1:
         global.srank = 22000
         break
-    case 526:
+    case war_1:
         global.srank = 21500
         break
-    case 739:
+    case tower_finalhallway:
         global.srank = 5500
         break
-    case 513:
+    case boss_pepperman:
         global.srank = 6
         break
-    case 514:
+    case boss_vigilante:
         global.srank = 6
         break
-    case 515:
+    case boss_noise:
         global.srank = 5
         break
-    case 783:
+    case boss_fakepep:
         global.srank = 4
+        break
+    case secret_entrance:
+        global.srank = 38000
         break
     case rmCustomLevel:
         var d = level_load(global.levelName)
