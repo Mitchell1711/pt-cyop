@@ -1,1 +1,0 @@
-show_message_async(state);
