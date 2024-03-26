@@ -1,4 +1,4 @@
-if (global.panic || instance_exists(obj_wartimer))
+if ((global.panic || instance_exists(obj_wartimer)) && sprite_index != spr_pizzaportal_outline)
 {
     image_alpha = 1
     if (sprite_index == spr_pizzaportal)
@@ -11,9 +11,11 @@ if (global.panic || instance_exists(obj_wartimer))
                 fmod_event_one_shot_3d("event:/sfx/misc/secretenter", x, y)
                 with (obj_camera)
                     lock = 1
-                state = (146 << 0)
+                state = states.actor
                 visible = false
                 other.sprite_index = spr_pizzaportalend
+                if (!ispeppino)
+                    other.sprite_index = spr_pizzaportalendN
                 other.image_index = 0
                 other.playerid = id
                 fmod_event_one_shot_3d("event:/sfx/misc/lapenter", x, y)
@@ -28,7 +30,7 @@ if (global.panic || instance_exists(obj_wartimer))
             }
         }
     }
-    else if (sprite_index == spr_pizzaportalend)
+    else if (sprite_index == spr_pizzaportalend || sprite_index == spr_pizzaportalendN)
     {
         with (playerid)
         {

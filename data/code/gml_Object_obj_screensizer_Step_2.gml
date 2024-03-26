@@ -1,15 +1,9 @@
-/*
-WARNING: Recursive script decompilation (for member variable name resolution) failed for gml_Script_gameframe_get_fullscreen
-
-System.InvalidOperationException: Stack empty.
-   at System.Collections.Generic.Stack`1.ThrowForEmptyStack()
-   at System.Collections.Generic.Stack`1.Pop()
-   at UndertaleModLib.Decompiler.Decompiler.DecompileFromBlock(DecompileContext context, Dictionary`2 blocks, Block block, List`1 tempvars, Stack`1 workQueue) in C:\Users\sebap\Documents\GitHub\UndertaleModTool\UndertaleModLib\Decompiler\Decompiler.cs:line 2149
-   at UndertaleModLib.Decompiler.Decompiler.DecompileFromBlock(DecompileContext context, Dictionary`2 blocks, Block block) in C:\Users\sebap\Documents\GitHub\UndertaleModTool\UndertaleModLib\Decompiler\Decompiler.cs:line 2654
-   at UndertaleModLib.Decompiler.Decompiler.<DecompileFromBlock>g__FindActualNameForAnonymousCodeObject|30_2(DecompileContext context, UndertaleCode anonymousCodeObject) in C:\Users\sebap\Documents\GitHub\UndertaleModTool\UndertaleModLib\Decompiler\Decompiler.cs:line 2430
-*/
 var ww = window_get_width()
 var wh = window_get_height()
+if (room != Loadiingroom && lang_get_value("use_ttf"))
+    global.tdp_text_enabled = 1
+else
+    global.tdp_text_enabled = 0
 var cr = cr_beam
 if ((device_mouse_x_to_gui(0) != mouse_xprevious || device_mouse_y_to_gui(0) != mouse_yprevious) && gml_Script_gameframe_mouse_in_window())
 {
@@ -40,6 +34,7 @@ switch room
 {
     case rmEditor:
     case rmModMenu:
+    case editor_room:
         cr = cr_none
     break;
 }

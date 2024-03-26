@@ -1,27 +1,28 @@
 function scr_is_p_rank() //gml_Script_scr_is_p_rank
 {
-    if (global.leveltosave != "exit")
+    if (global.leveltosave != "exit" && global.leveltosave != "secretworld")
         return (global.lap && global.secretfound >= 3 && global.treasure && (!global.combodropped) && global.prank_enemykilled);
-    else
+    else if (global.leveltosave == "exit")
         return (!global.combodropped);
+    else
+        return ((!global.combodropped) && global.prank_enemykilled);
 }
 
 function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
 {
-    fmod_event_instance_stop(global.snd_escaperumble, 1)
-    
+    //return to editor screen if exiting in play mode
     if (global.editingLevel)
     {
         audio_stop_all();
         room_goto(rmEditor);
         return(-1);
     }
-    
+
     if (argument0 == undefined)
         argument0 = 1
     if (argument1 == undefined)
         argument1 = 0
-    
+    fmod_event_instance_stop(global.snd_escaperumble, 1)
     var ex = x
     var ey = y
     var cx = (camera_get_view_x(view_camera[0]) + obj_screensizer.normal_size_fix_x)
@@ -31,7 +32,7 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
     if (global.timeattack == 1)
         obj_timeattack.stop = 1
     with (obj_wartimer)
-        notification_push((47 << 0), [minutes, (seconds + addseconds)])
+        notification_push((48 << 0), [minutes, (seconds + addseconds)])
     targetDoor = "none"
     obj_camera.alarm[2] = -1
     var roomname = room_get_name(room)
@@ -92,7 +93,7 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
         global.combo = 0
         obj_camera.alarm[4] = -1
         for (var i = 0; i < global.comboscore; i += 10)
-            create_collect((obj_player1.x + irandom_range(-60, 60)), ((obj_player1.y - 100) + irandom_range(-60, 60)), choose(2089, 2091, 2092, 2094, 2090), 10)
+            create_collect((obj_player1.x + irandom_range(-60, 60)), ((obj_player1.y - 100) + irandom_range(-60, 60)), choose(spr_shroomcollect, spr_tomatocollect, spr_cheesecollect, spr_sausagecollect, spr_pineapplecollect), 10)
         global.comboscore = 0
     }
     if (!instance_exists(obj_endlevelfade))
@@ -101,12 +102,19 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
         {
             do_rank = 1
             toppinvisible = argument0
-            if (room == tower_tutorial1)
+            with (obj_pizzaface)
+            {
+                if bbox_in_camera(view_camera[0])
+                    notification_push((70 << 0), [])
+            }
+            if (room == tower_tutorial1 || room == tower_tutorial1N)
             {
                 do_rank = 0
-                targetRoom = 757
+                targetRoom = tower_entrancehall
                 targetDoor = "HUB"
             }
+            else if (global.leveltosave == "secretworld")
+                toppinvisible = 0
             else if (room == tower_entrancehall)
             {
                 with (obj_followcharacter)
@@ -114,7 +122,7 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
                 if (!global.exitrank)
                 {
                     do_rank = 0
-                    targetRoom = 799
+                    targetRoom = Endingroom
                     targetDoor = "A"
                     instance_destroy(obj_pigtotal)
                     audio_stop_all()
@@ -127,11 +135,11 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
             }
         }
     }
-    obj_player1.state = (112 << 0)
+    obj_player1.state = states.door
     obj_player1.sprite_index = obj_player1.spr_lookdoor
     if instance_exists(obj_player2)
     {
-        obj_player2.state = (112 << 0)
+        obj_player2.state = states.door
         obj_player2.sprite_index = obj_player2.spr_lookdoor
         if global.coop
             obj_player2.visible = true
@@ -142,7 +150,5 @@ function scr_do_rank(argument0, argument1) //gml_Script_scr_do_rank
     global.snickchallenge = 0
     global.leveltorestart = -4
     gamesave_async_save()
-    
-    
 }
 
