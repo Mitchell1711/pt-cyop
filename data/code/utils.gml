@@ -910,8 +910,27 @@ function data_compatibility(argument0)
                     }
                 }
             }
-        break;
+        }
+    if(editorVer < 6){
+        var objid = 0
+        var prevobjid = 0
+        var newobjid = 0
+        for(var i = 0; i < array_length(d.instances); i++){
+            //get object id from room json
+            objid = struct_get(d.instances[i], "object")
+            //if statement so we dont need to look for the same updated object id again
+            if(objid != prevobjid){
+                newobjid = global.objectMap[objid]
+                newobjid = asset_get_index(newobjid)
+            }
+            prevobjid = objid
+            //update the loaded roomdata with the new object id
+            variable_struct_set(_temp.instances[i], "object", newobjid)
+        }
     }
+    //prevent compatibility from running multiple times
+    _stSet("_temp.editorVersion", 6)
+
     return _temp;
 }
     

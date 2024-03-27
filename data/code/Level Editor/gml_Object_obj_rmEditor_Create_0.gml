@@ -21,7 +21,7 @@ var comment = "";
 level = global.editorLevelName;
 lvlRoom = global.editorRoomName;
 
-editorVersion = 5;
+editorVersion = 6;
 //global.currentRoom = global.editorRoomName;
 //data = [[], [], [], [obj_screensizer.actual_width, obj_screensizer.actual_height]]
 data = roomData_new();/*struct_new();
@@ -220,7 +220,6 @@ function initInst(argument0) //gml_Script_initInst
     //show_message("here good?")
     var ins = instance_create_layer(struct_get(struct_get(insData, "variables"), "x"), struct_get(struct_get(insData, "variables"), "y"), layer_get_id(layerFormat("Instances", l)), obj_editorInst)
     var obj = struct_get(insData, "object")
-    obj = asset_get_index(global.objectMap[obj])
     ins.sprite_index = object_get_sprite(obj)
     ins.instID = argument0
     

@@ -11,9 +11,10 @@ layerForce = [];
 
 //show_message(global.levelMemory);
 
+var insts = struct_get(data, "instances");
+
 for (var i = 0; i < array_length(data.instances); i ++)
 {
-    var insts = struct_get(data, "instances");
     insData = insts[i]
     levelInst = global.currentRoom + "_" + string(i);
     if (!insData.deleted)// and !levelMemory_get(levelInst))
@@ -21,8 +22,6 @@ for (var i = 0; i < array_length(data.instances); i ++)
         var l = _stGet("insData.layer");
         layerConfirm("Instances", l);
         var objIndex = _stGet("insData.object")
-        //make object ids from previous versions compatible with the current one
-        objIndex = asset_get_index(global.objectMap[objIndex])
         if(objIndex >= 0){
             var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), objIndex)
             if(instance_exists(ins)){

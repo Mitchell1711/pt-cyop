@@ -49,11 +49,11 @@ switch state
             else
             {
                 alarm[2] = showbuffer_max
-                currentselect = 0
-                visualselect = 0
+                currentselect = 3
+                visualselect = 3
                 dark = 0
                 state = states.normal
-                sprite_index = spr_titlepep_forwardtoleft
+                sprite_index = _spr("pepmaker")
                 image_index = 0
             }
         }
@@ -76,7 +76,7 @@ switch state
             vmove = (key_down2 + key_up2)
             if ((sprite_index != spr_titlepep_punch && sprite_index != spr_titlepep_angry) || move != 0 || vmove != 0)
             {
-                if (move != 0 || vmove != 0)
+                /* if (move != 0 || vmove != 0)
                     angrybuffer = 0
                 if (currentselect < 3)
                 {
@@ -88,7 +88,7 @@ switch state
                 if (vmove == -1)
                     currentselect = 1
                 if (vmove == 1)
-                    currentselect = 3
+                    currentselect = 3 */
                 if (currentselect != visualselect && (sprite_index == spr_titlepep_left || sprite_index == spr_titlepep_middle || sprite_index == spr_titlepep_right || sprite_index == _spr("pepmaker_idle")))
                 {
                     visualselect = Approach(visualselect, currentselect, 1)
@@ -106,18 +106,18 @@ switch state
                 }
                 if (floor(image_index) == (image_number - 1))
                 {
-                    var edSpr = _spr("pepmaker")
+                    var edSpr = _spr("pepmaker");
                     switch sprite_index
                     {
                         case spr_titlepep_forwardtoleft:
-                        case spr_noisewashingmachine:
+                        case spr_titlepep_middletoleft:
                             sprite_index = spr_titlepep_left
                             break
-                        case spr_pizzahead_groundpunch:
-                        case spr_gustavopresentup:
+                        case spr_titlepep_lefttomiddle:
+                        case spr_titlepep_righttomiddle:
                             sprite_index = spr_titlepep_middle
                             break
-                        case spr_entrancedeco:
+                        case spr_titlepep_middletoright:
                             sprite_index = spr_titlepep_right
                             break
                         case edSpr:
@@ -162,10 +162,12 @@ switch state
                     if (trigger == other.currentselect)
                     {
                         fmod_event_instance_stop(obj_music.music.event, 1)
-                        if (!other.shownoise)
-                            fmod_event_one_shot("event:/sfx/ui/fileselect")
-                        else
-                            fmod_event_one_shot("event:/sfx/ui/fileselectN")
+                        if(trigger != 3){
+                            if (!other.shownoise)
+                                fmod_event_one_shot("event:/sfx/ui/fileselect")
+                            else
+                                fmod_event_one_shot("event:/sfx/ui/fileselectN")
+                        }
                         state = states.victory
                         sprite_index = confirmspr
                     }
@@ -344,7 +346,7 @@ else
     noise_alpha = Approach(noise_alpha, 0, acc)
     pep_alpha = Approach(pep_alpha, 1, acc)
 }
-if (currentselect != -1)
+if (currentselect != -1 && currentselect != 3)
 {
     pep_game.alpha = pep_alpha
     noise_game.alpha = noise_alpha
