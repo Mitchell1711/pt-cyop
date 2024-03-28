@@ -12,5 +12,5 @@ instance_destroy(solid_inst)
 
 if (room == rmCustomLevel)
 {
-    scr_destroy_tiles(32, "Tiles_1")
+    scr_destroy_custom_tiles(32)
 }

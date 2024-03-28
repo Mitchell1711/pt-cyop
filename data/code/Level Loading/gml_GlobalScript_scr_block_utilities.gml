@@ -1,35 +1,41 @@
 function scr_destroy_tiles(argument0, argument1, argument2) //gml_Script_scr_destroy_tiles
 {
-    if (argument2 == undefined)
-        argument2 = 0
-    var lay_id = layer_get_id(argument1)
-    if (lay_id == -1)
-    {
-        lay_id = layer_get_id("custom_" + argument1);
+    if(room == rmCustomLevel){
+        scr_destroy_custom_tiles(argument0, argument2)
     }
-    if (lay_id != -1 or room == rmCustomLevel)
-    {
-        var map_id = layer_tilemap_get_id(lay_id)
-        var w = (abs(sprite_width) / argument0)
-        var h = (abs(sprite_height) / argument0)
-        var ix = sign(image_xscale)
-        var iy = sign(image_yscale)
-        if (ix < 0)
-            w++
-        for (var yy = (0 - argument2); yy < (h + argument2); yy++)
+    else{
+        if (argument2 == undefined)
+            argument2 = 0
+        var lay_id = layer_get_id(argument1)
+        if (lay_id != -1)
         {
-            for (var xx = (0 - argument2); xx < (w + argument2); xx++)
-                scr_destroy_tile((x + ((xx * argument0) * ix)), (y + ((yy * argument0) * iy)), map_id)
+            var map_id = layer_tilemap_get_id(lay_id)
+            var w = (abs(sprite_width) / argument0)
+            var h = (abs(sprite_height) / argument0)
+            var ix = sign(image_xscale)
+            var iy = sign(image_yscale)
+            if (ix < 0)
+                w++
+            for (var yy = (0 - argument2); yy < (h + argument2); yy++)
+            {
+                for (var xx = (0 - argument2); xx < (w + argument2); xx++)
+                    scr_destroy_tile((x + ((xx * argument0) * ix)), (y + ((yy * argument0) * iy)), map_id)
+            }
         }
     }
 }
 
 function scr_destroy_tile_arr(argument0, argument1, argument2) //gml_Script_scr_destroy_tile_arr
 {
-    if (argument2 == undefined)
-        argument2 = 0
-    for (var i = 0; i < array_length(argument1); i++)
-        scr_destroy_tiles(argument0, argument1[i], argument2)
+    if(room == rmCustomLevel){
+        scr_destroy_custom_tiles(argument0, argument2)
+    }
+    else{
+        if (argument2 == undefined)
+            argument2 = 0
+        for (var i = 0; i < array_length(argument1); i++)
+            scr_destroy_tiles(argument0, argument1[i], argument2)
+    }
 }
 
 function scr_destroy_tile(argument0, argument1, argument2) //gml_Script_scr_destroy_tile
@@ -37,21 +43,6 @@ function scr_destroy_tile(argument0, argument1, argument2) //gml_Script_scr_dest
     var data = tilemap_get_at_pixel(argument2, argument0, argument1)
     data = tile_set_empty(data)
     tilemap_set_at_pixel(argument2, data, argument0, argument1)
-    
-    if (room == rmCustomLevel)
-    {
-        _temp = global.roomData;
-        var xx = int64(argument0)
-        var yy = int64(argument1)
-        var posString = string(xx + _stGet("_temp.properties.roomX")) + "_" + string(yy + _stGet("_temp.properties.roomY"));
-        with obj_tilemapDrawer
-        {
-            if (!tileLayer_isSecret(layer_tilemap))
-            {
-                eraseTileFromSurface(xx, yy);
-            }
-        }
-    }
 }
 
 function scr_solid_line(argument0) //gml_Script_scr_solid_line
@@ -127,3 +118,32 @@ function scr_cutoff_get_angle(argument0) //gml_Script_scr_cutoff_get_angle
     return d;
 }
 
+function scr_destroy_custom_tiles(argument0, argument1){
+    if (argument1 == undefined)
+        argument1 = 0
+    var w = (abs(sprite_width) / argument0)
+    var h = (abs(sprite_height) / argument0)
+    var ix = sign(image_xscale)
+    var iy = sign(image_yscale)
+    if (ix < 0)
+        w++
+    for (var yy = (0 - argument1); yy < (h + argument1); yy++)
+    {
+        for (var xx = (0 - argument1); xx < (w + argument1); xx++)
+            scr_destroy_custom_tile((x + ((xx * argument0) * ix)), (y + ((yy * argument0) * iy)))
+    }
+}
+
+function scr_destroy_custom_tile(argument0, argument1){
+    _temp = global.roomData;
+    var xx = int64(argument0)
+    var yy = int64(argument1)
+    var posString = string(xx + _stGet("_temp.properties.roomX")) + "_" + string(yy + _stGet("_temp.properties.roomY"));
+    with obj_tilemapDrawer
+    {
+        if (!tileLayer_isSecret(layer_tilemap))
+        {
+            eraseTileFromSurface(xx, yy);
+        }
+    }
+}

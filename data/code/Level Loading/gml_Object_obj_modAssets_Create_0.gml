@@ -1,9 +1,9 @@
 //load asset folder
-currentVersion = "final-port";
+currentVersion = "noise-port";
 newestVersion = "";
 downloadLink = "https://gamebanana.com/mods/443629";
 
-prevVersions = ["beta-1", "beta-2", "beta-2.1", "beta-3", "beta-3.5", "halloween-port"]
+prevVersions = ["beta-1", "beta-2", "beta-2.1", "beta-3", "beta-3.5", "halloween-port", "final-port"]
 
 global.justUpdated = false;
 var noob = !file_exists("version");
@@ -11,120 +11,125 @@ var noob = !file_exists("version");
 ini_open("version")
 var v = ini_read_string("data", "version", "");
 
-if (v != currentVersion || !directory_exists("editor_assets") || !file_exists("editor_assets/objects.json"))
+if (v != currentVersion or !directory_exists(game_save_id + "editor_assets") or !file_exists(game_save_id + "editor_assets/objects.json"))
 {
     //show_message_async("Extracting mod assets, this may take a while...")
-    var q = show_message("Hey! \"Create Your Own Pizza\" mod assets will need to be extracted, which may take a while. This will only happen the first time you open the mod/after an update.\n\nPress OK to continue")
-    
-    if (!noob)
-    {
-        global.justUpdated = true;
-    }
-    if (!q)
-    {
-        //game_end();
-    }
-    if (directory_exists("editor_assets"))
-    {
-        var prevEditorFiles = find_files_recursive("editor_assets/", "");
-        repeat array_length(prevEditorFiles)
+    var q = show_question("Hey! \"Create Your Own Pizza\" mod assets might need to be extracted, which may take a while. This will only happen the first time you open the mod/after an update.\n\nPress Yes to continue")
+    if(q){
+        if (!noob)
         {
-            file_delete(array_pop(prevEditorFiles));
+            global.justUpdated = true;
         }
-        directory_destroy("editor_assets")
-    }
+        if (!q)
+        {
+            //game_end();
+        }
+        if (directory_exists("editor_assets"))
+        {
+            var prevEditorFiles = find_files_recursive("editor_assets/", "");
+            repeat array_length(prevEditorFiles)
+            {
+                file_delete(array_pop(prevEditorFiles));
+            }
+            directory_destroy("editor_assets")
+        }
 
-    var wins = find_files_recursive(program_directory, ".win", 2);
-    
-    
-    var hFound = false;
-    for (var i = 0; i < array_length(wins) and !hFound; i ++)
-    {
-        //show_message("aw")
-        var b = buffer_load(wins[i])
-        buffer_seek(b, buffer_seek_start, 0);
-        buffer_seek(b, buffer_seek_start, 0x0537AA8E)//87446308)
-        //show_message("hell")
+        var wins = find_files_recursive(program_directory, ".win", 2);
         
-        var head = 0;
-        var hFail = false;
         
-        if (buffer_get_size(b) < 87446308)
+        var hFound = false;
+        for (var i = 0; i < array_length(wins) and !hFound; i ++)
         {
-            hFail = true;
-        }
-        while (!hFound and !hFail)
-        {
-            if (buffer_tell(b) >= buffer_get_size(b) - 7000000)
+            //show_message("aw")
+            var b = buffer_load(wins[i])
+            buffer_seek(b, buffer_seek_start, 0);
+            buffer_seek(b, buffer_seek_start, 0x0537AA8E)//87446308)
+            //show_message("hell")
+            
+            var head = 0;
+            var hFail = false;
+            
+            if (buffer_get_size(b) < 87446308)
             {
                 hFail = true;
             }
-            else
+            while (!hFound and !hFail)
             {
-                var num = buffer_read(b, buffer_u8)
-                var check = 10000 * head + num
-                switch check
+                if (buffer_tell(b) >= buffer_get_size(b) - 7000000)
                 {
-                    case 00122: //z
-                    case 10105: //i
-                    case 20112: //p
-                    case 30104: //h
-                    case 40101: //e
-                    case 50097: //a
-                    case 60100: //d
-                    case 70101: //e
-                    case 80114: //r
-                        head ++;
-                    break;
-                    case 90053: //5
-                        hFound = true;
-                    break;
-                    default:
-                        head = 0
-                    break;
+                    hFail = true;
+                }
+                else
+                {
+                    var num = buffer_read(b, buffer_u8)
+                    var check = 10000 * head + num
+                    switch check
+                    {
+                        case 00122: //z
+                        case 10105: //i
+                        case 20112: //p
+                        case 30104: //h
+                        case 40101: //e
+                        case 50097: //a
+                        case 60100: //d
+                        case 70101: //e
+                        case 80114: //r
+                            head ++;
+                        break;
+                        case 90053: //5
+                            hFound = true;
+                        break;
+                        default:
+                            head = 0
+                        break;
+                    }
                 }
             }
+            if (hFound)
+            {
+                var newB = buffer_create(900000, buffer_grow, 1)
+                repeat(buffer_get_size(b) - buffer_tell(b))
+                {
+                    buffer_write(newB, buffer_u8, buffer_read(b, buffer_u8))
+                }
+                buffer_save(newB, "editor_assets.ccc");
+                buffer_delete(newB);
+            }
+            buffer_delete(b);
+            //show_message("na")
         }
+        //buffer_write(newB, buffer_text, buffer_read(b, buffer_text))
+        /*
+        repeat buffer_get_size(b)
+        {
+            var retPos = buffer_tell(b);
+            var k = [];
+            repeat 10
+                array_push(k, buffer_read(b, buffer_u8));
+            if (k[0] == 122 and k[1] == 105 and k[2] == 112 and k[3] == 104)
+                show_message("found it bitch")
+                
+            buffer_seek(b, buffer_seek_start, retPos + 1);
+        }*/
         if (hFound)
         {
-            var newB = buffer_create(900000, buffer_grow, 1)
-            repeat(buffer_get_size(b) - buffer_tell(b))
-            {
-                buffer_write(newB, buffer_u8, buffer_read(b, buffer_u8))
-            }
-            buffer_save(newB, "editor_assets.ccc");
-            buffer_delete(newB);
-        }
-        buffer_delete(b);
-        //show_message("na")
-    }
-    //buffer_write(newB, buffer_text, buffer_read(b, buffer_text))
-    /*
-    repeat buffer_get_size(b)
-    {
-        var retPos = buffer_tell(b);
-        var k = [];
-        repeat 10
-            array_push(k, buffer_read(b, buffer_u8));
-        if (k[0] == 122 and k[1] == 105 and k[2] == 112 and k[3] == 104)
-            show_message("found it bitch")
+            zip_unzip("editor_assets.ccc", game_save_id);
+            file_delete("editor_assets.ccc");
             
-        buffer_seek(b, buffer_seek_start, retPos + 1);
-    }*/
-    if (hFound)
-    {
-        zip_unzip("editor_assets.ccc", game_save_id);
-        file_delete("editor_assets.ccc");
-        
-        directory_create("towers");
-        var defTowerFiles = find_files_recursive("editor_assets/defaultTowers/", "")
-        
-        for (var i = 0; i < array_length(defTowerFiles); i ++)
-        {
-            file_copy(defTowerFiles[i], string_replace(defTowerFiles[i], "editor_assets/defaultTowers", "towers"));
+            directory_create("towers");
+            var defTowerFiles = find_files_recursive("editor_assets/defaultTowers/", "")
+            
+            for (var i = 0; i < array_length(defTowerFiles); i ++)
+            {
+                file_copy(defTowerFiles[i], string_replace(defTowerFiles[i], "editor_assets/defaultTowers", "towers"));
+            }
         }
+        
+        
     }
-    
+    else{
+        show_message("Stopped extracting mod assets, in case of any issues the mod assets can be manually updated in \"AppData/Roaming/PizzaTower_GM2\"")
+    }
     ini_write_string("data", "version", currentVersion)
 }
 ini_close();
@@ -251,6 +256,8 @@ global.defaultSong_names = [];
 global.defaultSong_display = struct_new();
 
 global.tilesetData = struct_new();
+global.loadedTileSprite = undefined
+global.loadedTile = undefined
 
 function switchAssetFolder(argument0)
 {

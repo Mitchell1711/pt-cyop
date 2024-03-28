@@ -1,4 +1,4 @@
-scr_getinput();
+scr_menu_getinput();
 var cpos = cursor_hud_position();
 
 if (bullshitCooldown > 0) bullshitCooldown --;
@@ -342,7 +342,7 @@ for (var cind = 0; cind < array_length(w_openCanvas); cind ++)
     }
 }
 
-if (key_slap2 or key_escape)
+if (key_back || key_quit2)
 {
     instance_destroy();
 }

@@ -429,9 +429,17 @@ function drawTile(argument0, argument1, argument2, argument3, argument4)
     if (array_length(tsetCoord) == 2)
         tsetCoord = [tsetCoord[0], tsetCoord[1], 1, 1];
     
-    var tset = _tileset(argument0);
-    var tsetSprite = _spr(argument0);
     
+    var tset = _tileset(argument0);
+
+    if(global.loadedTile != argument0){
+        var tsetSprite = _spr(argument0);
+        global.loadedTile = argument0
+        global.loadedTileSprite = tsetSprite
+    }
+    else{
+        tsetSprite = global.loadedTileSprite
+    }
     draw_sprite_part_ext(tsetSprite, 0, tsetCoord[0] * tset.size[0], tsetCoord[1] * tset.size[1], tset.size[0] * tsetCoord[2], tset.size[1] * tsetCoord[3], xx, yy,  tset.scale * argument4, tset.scale * argument4, draw_get_color(), draw_get_alpha());
 }
 
@@ -926,6 +934,25 @@ function data_compatibility(argument0)
             prevobjid = objid
             //update the loaded roomdata with the new object id
             variable_struct_set(_temp.instances[i], "object", newobjid)
+            //fix spawn variables
+            //this shit doesnt work and i cant figure out why
+            //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists its infuriating
+            //not that it matters since only 2 levels depend on this feature in the first place
+            /* switch newobjid{
+                case obj_conveyorspawner:
+                case obj_conveyordespawner:
+                case obj_railh:
+                case obj_railv:
+                    var objectlist = fix_spawner_variables(d.instances[i].variables, "objectlist")
+                    if(objectlist != undefined)
+                        variable_struct_set(_temp.instances[i].variables, "objectlist", objectlist)
+                break
+                case obj_fakesanta:
+                    var objectlist = fix_spawner_variables(d.instances[i].variables, "content")
+                    if(objectlist != undefined)
+                        variable_struct_set(_temp.instances[i].variables, "content", objectlist)
+                break
+            } */
         }
     }
     //prevent compatibility from running multiple times
@@ -933,7 +960,28 @@ function data_compatibility(argument0)
 
     return _temp;
 }
-    
+
+function fix_spawner_variables(argument0, argument1){
+    //check if struct exists before grabbing it
+    if(variable_struct_exists(argument0, argument1)){
+        var objectlist = struct_get(argument0, argument1)
+        //check if its an array or not
+        if(is_array(objectlist)){
+            for(var j = 0; j < array_length(objectlist); j++){
+                var newid = global.objectMap[objectlist[j]]
+                objectlist[j] = asset_get_index(newid)
+            }
+        }
+        else{
+            var newid = global.objectMap[objectlist[j]]
+            objectlist = asset_get_index(newid)
+        }
+        return objectlist
+    }
+    else{
+        return undefined
+    }
+}
     
 function ask_or_not(argument0, argument1)
 {
