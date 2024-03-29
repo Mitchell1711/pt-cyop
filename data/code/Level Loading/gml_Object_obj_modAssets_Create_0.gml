@@ -197,7 +197,14 @@ global.secretRoomFix = ["main", 0] // yeah
 
 global.objectData = json_parse(file_text_read_all(editor_folder("objects.json")));
 //object ids got shuffled around with the new update
-global.objectMap = json_parse(file_text_read_all(editor_folder("objectCompatibility.json")))
+if(file_exists("editor_assets/objectCompatibility.json")){
+    global.objectMap = json_parse(file_text_read_all(editor_folder("objectCompatibility.json")))
+}
+else{
+    show_message("Editor assets is missing objectCompatibility.json, any levels made before this version will load incorrectly and likely crash the game. Try manually adding it to the editor assets folder and open the game again.")
+    game_end();
+    exit;
+}
 
 if (!variable_struct_exists(global.objectData, "variableTypes"))
 {
