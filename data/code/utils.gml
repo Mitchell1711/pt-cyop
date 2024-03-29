@@ -926,33 +926,36 @@ function data_compatibility(argument0)
         for(var i = 0; i < array_length(d.instances); i++){
             //get object id from room json
             objid = struct_get(d.instances[i], "object")
-            //if statement so we dont need to look for the same updated object id again
-            if(objid != prevobjid){
-                newobjid = global.objectMap[objid]
-                newobjid = asset_get_index(newobjid)
+            //prevent array index crash
+            if(objid <= array_length(global.objectMap)){
+                //if statement so we dont need to look for the same updated object id again
+                if(objid != prevobjid){
+                    newobjid = global.objectMap[objid]
+                    newobjid = asset_get_index(newobjid)
+                }
+                prevobjid = objid
+                //update the loaded roomdata with the new object id
+                variable_struct_set(_temp.instances[i], "object", newobjid)
+                //fix spawn variables
+                //this shit doesnt work and i cant figure out why
+                //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists its infuriating
+                //not that it matters since only 2 levels depend on this feature in the first place
+                /* switch newobjid{
+                    case obj_conveyorspawner:
+                    case obj_conveyordespawner:
+                    case obj_railh:
+                    case obj_railv:
+                        var objectlist = fix_spawner_variables(d.instances[i].variables, "objectlist")
+                        if(objectlist != undefined)
+                            variable_struct_set(_temp.instances[i].variables, "objectlist", objectlist)
+                    break
+                    case obj_fakesanta:
+                        var objectlist = fix_spawner_variables(d.instances[i].variables, "content")
+                        if(objectlist != undefined)
+                            variable_struct_set(_temp.instances[i].variables, "content", objectlist)
+                    break
+                } */
             }
-            prevobjid = objid
-            //update the loaded roomdata with the new object id
-            variable_struct_set(_temp.instances[i], "object", newobjid)
-            //fix spawn variables
-            //this shit doesnt work and i cant figure out why
-            //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists its infuriating
-            //not that it matters since only 2 levels depend on this feature in the first place
-            /* switch newobjid{
-                case obj_conveyorspawner:
-                case obj_conveyordespawner:
-                case obj_railh:
-                case obj_railv:
-                    var objectlist = fix_spawner_variables(d.instances[i].variables, "objectlist")
-                    if(objectlist != undefined)
-                        variable_struct_set(_temp.instances[i].variables, "objectlist", objectlist)
-                break
-                case obj_fakesanta:
-                    var objectlist = fix_spawner_variables(d.instances[i].variables, "content")
-                    if(objectlist != undefined)
-                        variable_struct_set(_temp.instances[i].variables, "content", objectlist)
-                break
-            } */
         }
     }
     //prevent compatibility from running multiple times
