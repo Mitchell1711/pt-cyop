@@ -432,7 +432,7 @@ function drawTile(argument0, argument1, argument2, argument3, argument4)
     
     var tset = _tileset(argument0);
 
-    if(global.loadedTile != argument0){
+    if(global.loadedTile != argument0 || global.loadedTileSprite == undefined){
         var tsetSprite = _spr(argument0);
         global.loadedTile = argument0
         global.loadedTileSprite = tsetSprite

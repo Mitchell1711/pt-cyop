@@ -15,6 +15,8 @@ global.editorLevelName = "";
 global.currentLevel = ""
 global.fromHub = 0
 global.hubLevel = ""
+global.loadedTileSprite = undefined
+global.loadedTile = undefined
 
 windows_init();
 
