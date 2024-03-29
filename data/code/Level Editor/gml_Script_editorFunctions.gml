@@ -335,7 +335,7 @@ function editor_drawCanvasNotice(argument0, argument1) //canvas struct, text (th
 function roomData_new()
 {
     return(struct_new([
-        ["editorVersion", editorVersion],
+        ["editorVersion", global.editorVersion],
         ["properties", struct_new([
             ["levelWidth", obj_screensizer.actual_width],
             ["levelHeight", obj_screensizer.actual_height],

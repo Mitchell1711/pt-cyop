@@ -1,5 +1,6 @@
 //load asset folder
 currentVersion = "noise-port";
+global.editorVersion = 6
 newestVersion = "";
 downloadLink = "https://gamebanana.com/mods/443629";
 

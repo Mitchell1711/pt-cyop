@@ -21,7 +21,6 @@ var comment = "";
 level = global.editorLevelName;
 lvlRoom = global.editorRoomName;
 
-editorVersion = 6;
 //global.currentRoom = global.editorRoomName;
 //data = [[], [], [], [obj_screensizer.actual_width, obj_screensizer.actual_height]]
 data = roomData_new();/*struct_new();
@@ -84,7 +83,7 @@ function roomPath() //gml_Script_roomPath
 
 function saveData() //gml_Script_saveData
 {
-    data.editorVersion = editorVersion;
+    data.editorVersion = global.editorVersion;
     var jText = json_stringify(data, true);
     
     var b = 1;
