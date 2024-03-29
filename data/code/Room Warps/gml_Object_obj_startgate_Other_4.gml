@@ -14,6 +14,7 @@ if (levelName != "")
     {
         titlecard_sprite = _spr(sett.titlecardSprite);
         title_sprite = _spr(sett.titleSprite);
+        noisespots = sett.noiseHeads
         if (sett.titleSong != "")
         {
             title_music = sett.titleSong;

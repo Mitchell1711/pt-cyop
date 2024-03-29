@@ -93,6 +93,7 @@ if ((floor(obj_player1.image_index) == (obj_player1.image_number - 1) && obj_pla
                         title_sprite = gate.title_sprite
                         title_index = gate.title_index
                         title_music = gate.title_music
+                        noisespots = gate.noisespots
                     }
                 }
             }

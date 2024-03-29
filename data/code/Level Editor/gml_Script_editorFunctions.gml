@@ -209,10 +209,23 @@ function level_filename(argument0) //level name
     return(mod_folder("levels/" + argument0 + "/level.ini"))
 }
 
+function level_noiseheads(argument0){
+    return(mod_folder("levels/" + argument0 + "/noiseHeads.json"))
+}
+
 function level_load(argument0) //level name (returns a struct)
 {
     var l = struct_new();
     ini_open(level_filename(argument0));
+    //grab the noiseheads struct array
+    var noisejson = level_noiseheads(argument0)
+    var noiseHeads = []
+    if(file_exists(noisejson)){
+        noisejson = file_text_open_read(noisejson)
+        noisejson = file_text_read_all(noisejson)
+        noiseHeads = json_parse(noisejson)
+    }
+
     struct_set(l, [
         ["name", ini_read_string("data", "name", "Level Name")],
         ["pscore", ini_read_real("data", "pscore", 10000)],
@@ -220,7 +233,8 @@ function level_load(argument0) //level name (returns a struct)
         ["escape", ini_read_real("data", "escape", timeString_get_seconds("4:00"))],
         ["titlecardSprite", ini_read_string("data", "titlecardSprite", "no titlecard")],
         ["titleSprite", ini_read_string("data", "titleSprite", "")],
-        ["titleSong", ini_read_string("data", "titleSong", "")]
+        ["titleSong", ini_read_string("data", "titleSong", "")],
+        ["noiseHeads", noiseHeads]
     ])
     ini_close();
     return(l);

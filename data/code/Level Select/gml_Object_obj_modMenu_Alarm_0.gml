@@ -21,6 +21,7 @@ else
             titlecard_index = 0
             title_sprite = _spr(sett.titleSprite);
             title_index = 0
+            noisespots = sett.noiseHeads
             if (sett.titleSong != "")
             {
                 title_music = sett.titleSong;

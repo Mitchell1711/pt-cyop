@@ -11,6 +11,7 @@ else
     key_jump = false;
     key_delete2 = false;
     key_quit2 = false;
+    key_swap = false
 }
 
 var vmove = (key_down2 - key_up2)
@@ -38,9 +39,11 @@ if (vmove != 0)
     
     global.towerSelected = towerSelected
 }
-
+if(swapy != swapystart)
+    swapy--
 //quick and dirty character swap code because i have no idea how to implement it into the menu
-if(keyboard_check_pressed(vk_shift)){
+if(key_swap){
+    swapy += 10
     fmod_event_one_shot("event:/sfx/ui/switchcharup")
     if(global.charSelected < 2){
         global.charSelected++
@@ -245,6 +248,10 @@ draw_set_font(global.editorfont);
 draw_set_halign(fa_right);
 draw_text(logoX + 900, 5 * dsin(current_time / 10) + logoY + 170, obj_modAssets.currentVersion)
 //draw_sprite(logoSpr, 0, ((obj_screensizer.actual_width - sprite_get_width(logoSpr) - 20 + logoX) - w) % w, 20 + logoY);
+
+//draw swap icon
+draw_sprite(swapmodespr[global.charSelected], swapsprindex, swapx, swapy)
+swapsprindex += 0.05
 
 draw_set_halign(fa_left);
 draw_set_font(global.bigfont)
