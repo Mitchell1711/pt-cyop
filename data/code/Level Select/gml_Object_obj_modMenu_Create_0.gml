@@ -7,6 +7,9 @@ modRoom_init()
 
 global.editingLevel = false;
 global.editorLevelName = "";
+global.currentLevel = ""
+global.fromHub = 0
+global.hubLevel = ""
 
 windows_init();
 
