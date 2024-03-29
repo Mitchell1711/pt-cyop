@@ -158,6 +158,8 @@ global.default_audio = [];
 global.default_bgpresets = [];
 
 global.modFolder = "newTower"
+//this shouldnt be here but i dont care
+global.charSelected = 0
 
 function general_folder(argument0)
 {

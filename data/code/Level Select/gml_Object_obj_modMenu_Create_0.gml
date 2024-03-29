@@ -1,5 +1,7 @@
+instance_destroy(obj_swapmodefollow)
+global.swapmode = 0
 with (obj_player)
-    state = (18 << 0)
+    state = states.titlescreen
 
 modRoom_init()
 

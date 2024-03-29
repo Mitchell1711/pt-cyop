@@ -1,6 +1,13 @@
 if (seenTitlecard)
 {
-    loadCustomLevel(towerList[towerSelected][2], false);
+    //if swap mode was chosen go to the character select menu instead of immediately loading a level
+    if(global.charSelected == 2){
+        obj_player1.targetRoom = characterselect
+        instance_create(0, 0, obj_fadeout)
+    }
+    else{
+        loadCustomLevel(towerList[towerSelected][2], false);
+    }
 }
 else
 {

@@ -39,6 +39,17 @@ if (vmove != 0)
     global.towerSelected = towerSelected
 }
 
+//quick and dirty character swap code because i have no idea how to implement it into the menu
+if(keyboard_check_pressed(vk_shift)){
+    fmod_event_one_shot("event:/sfx/ui/switchcharup")
+    if(global.charSelected < 2){
+        global.charSelected++
+    }
+    else{
+        global.charSelected = 0
+    }
+}
+
 if (key_jump)
 {
     var t = towerSelected
@@ -55,9 +66,24 @@ if (key_jump)
             
             instance_activate_object(obj_player);
             global.fromMenu = true;
+            //select character
             with obj_player
             {
                 backtohubroom = room;
+                character = "P"
+                if(global.charSelected == 0){
+                    global.swapmode = false
+                    ispeppino = true
+                }
+                else if(global.charSelected == 1){
+                    global.swapmode = false
+                    ispeppino = false
+                }
+                else if(global.charSelected == 2){
+                    global.swapmode = true
+                    ispeppino = true
+                }
+                scr_characterspr()
             }
             if (towerList[t][3] == 0)
             {
