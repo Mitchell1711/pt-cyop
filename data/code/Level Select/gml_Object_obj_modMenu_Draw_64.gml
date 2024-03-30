@@ -504,7 +504,7 @@ for (var cind = 0; cind < array_length(w_openCanvas); cind ++)
     }
 }
 
-if key_quit2
+if key_quit2 || key_back
 {
     if (obj_music.music != noone)
         fmod_event_instance_play(obj_music.music.event);
