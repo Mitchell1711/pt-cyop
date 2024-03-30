@@ -22,7 +22,7 @@ for (var i = 0; i < array_length(data.instances); i ++)
         var l = _stGet("insData.layer");
         layerConfirm("Instances", l);
         var objIndex = _stGet("insData.object")
-        if(objIndex >= 0){
+        if(objIndex != undefined){
             var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), objIndex)
             if(instance_exists(ins)){
                 instanceManager_checkAndSwitch(i, ins);

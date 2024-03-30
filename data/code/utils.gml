@@ -937,8 +937,7 @@ function data_compatibility(argument0)
                     variable_struct_set(_temp.instances[i], "object", newobjid)
                     //fix spawn variables
                     //this shit doesnt work and i cant figure out why
-                    //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists its infuriating
-                    //not that it matters since only 2 levels depend on this feature in the first place
+                    //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists
                     /* switch newobjid{
                         case obj_conveyorspawner:
                         case obj_conveyordespawner:
@@ -954,6 +953,10 @@ function data_compatibility(argument0)
                                 variable_struct_set(_temp.instances[i].variables, "content", objectlist)
                         break
                     } */
+                }
+                //if the objid is larger than the objectcompat then its most likely from a modded version
+                else{
+                    variable_struct_set(_temp.instances[i], "object", undefined)
                 }
             }
         break
