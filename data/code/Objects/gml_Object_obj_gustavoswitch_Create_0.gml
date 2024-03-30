@@ -19,3 +19,5 @@ if (!obj_player1.ispeppino)
     spr_sign = spr_noisesign
 }
 collisioned = 0
+//like 3 tiles idk
+maxdistance = 96
