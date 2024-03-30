@@ -37,7 +37,7 @@ if ((sprite_index == spr_noiseswitch1) && (!collisioned))
     mask_index = spr_player_mask
     var xs = sign((x - obj_peppinoswitch.x))
     //maxdistance is used to prevent freezes if theres no wall in between the switch objects
-    while ((!(place_meeting((x - (1 * xs)), y, obj_solid))) || maxdistance > 0){
+    while ((!(place_meeting((x - (1 * xs)), y, obj_solid))) && maxdistance > 0){
         x -= (1 * xs)
         maxdistance--
     }
