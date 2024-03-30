@@ -92,7 +92,7 @@ if (surface_exists(tilemap_surface) and surface_exists(tilemap_prevSurface))
         
     }
     */
-    
+    draw_set_alpha(1)
     event_user(0);
 
     draw_set_alpha(tile_alpha * image_alpha);
