@@ -479,7 +479,7 @@ _stSet("w_canvas.bgs", _wCanvas(256, 180, "bgs"));
 windows_add_canvas(200, 200, "bgPresetDropdown");
 
 _stSet("w_canvas.settingTypes", _wCanvas(64, 32, "settingTypes"));
-_stSet("w_canvas.settings", _wCanvas(300, 128, "settings"));
+_stSet("w_canvas.settings", _wCanvas(300, 144, "settings"));
 
 _stSet("w_canvas.instanceMenu", _wCanvas(256, 128, "instanceMenu"));
 

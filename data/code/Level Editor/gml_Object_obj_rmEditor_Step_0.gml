@@ -1162,7 +1162,7 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                 else // level
                 {
                     var mInd = floor(onY / 16);
-                    if (mInd == clamp(mInd, 0, 6))
+                    if (mInd == clamp(mInd, 0, 7))
                     {
                         settingsHovering = mInd;
                     }
@@ -1195,6 +1195,7 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                             case 4:
                             case 5:
                             case 6:
+                            case 7:
                                 opts = array_duplicate(spriteList)
                                 var cb = "cardSprite";
                                 var prompt = "sprite"
@@ -1210,12 +1211,18 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                                     cb = "Sprite"
                                     txt = "levelSettings.titleSprite";
                                 }
-                                else if (settingsHovering == 6)
+                                if (settingsHovering == 6)
                                 {
                                     opts = audioList;
                                     prompt = "audio"
                                     cb = "Song"
                                     txt = "levelSettings.titleSong"
+                                }
+                                else if (settingsHovering == 7){
+                                    opts = audioList
+                                    prompt = "audio"
+                                    cb = "SongN"
+                                    txt = "levelSettings.titleSongN"
                                 }
                                 
                                 

@@ -326,7 +326,8 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                         "Pizza Time limit: " + timeString_get_string(levelSettings.escape),
                         "Titlecard sprite: " + levelSettings.titlecardSprite,
                         "Title text sprite: " + levelSettings.titleSprite,
-                        "Title Jingle: " + levelSettings.titleSong
+                        "Title Jingle: " + levelSettings.titleSong,
+                        "Title Jingle Noise: " + levelSettings.titleSongN
                     ]
                     if (levelSettings.isWorld)
                     {

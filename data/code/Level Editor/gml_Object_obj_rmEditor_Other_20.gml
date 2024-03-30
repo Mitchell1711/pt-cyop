@@ -44,6 +44,7 @@ switch ev.name
     case "titlecardSprite":
     case "titleSprite":
     case "titleSong":
+    case "titleSongN":
         _stSet("levelSettings." + ev.name, ev.data[0]);
         wCanvas_close(c);
     break;

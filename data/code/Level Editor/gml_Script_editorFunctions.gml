@@ -234,6 +234,7 @@ function level_load(argument0) //level name (returns a struct)
         ["titlecardSprite", ini_read_string("data", "titlecardSprite", "no titlecard")],
         ["titleSprite", ini_read_string("data", "titleSprite", "")],
         ["titleSong", ini_read_string("data", "titleSong", "")],
+        ["titleSongN", ini_read_string("data", "titleSongN", "")],
         ["noiseHeads", noiseHeads]
     ])
     ini_close();
@@ -251,6 +252,7 @@ function level_save(argument0, argument1) //level name, level struct
     ini_write_string("data", "titlecardSprite", l.titlecardSprite);
     ini_write_string("data", "titleSprite", l.titleSprite);
     ini_write_string("data", "titleSong", l.titleSong);
+    ini_write_string("data", "titleSongN", l.titleSongN)
     ini_close();
 }
 
