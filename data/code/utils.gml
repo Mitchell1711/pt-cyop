@@ -779,31 +779,35 @@ function instanceManager_getKey(argument0) //instid
 
 function instanceManager_add(argument0, argument1) //instid, id
 {
-    struct_set(global.instanceManager, [[instanceManager_getKey(argument0), argument1]])
+    struct_set(global.instanceManager, [[argument0, argument1]])
 }
 
 function instanceManager_checkAndSwitch(argument0, argument1) //instid, id
 {
-    var instKey = instanceManager_getKey(argument0)
-    if (variable_struct_exists(global.instanceManager, instKey))
+    if (variable_struct_exists(global.instanceManager, argument0))
     {
-        var ins = struct_get(global.instanceManager, instKey)
-        if (ds_list_find_index(global.escaperoom, ins) != -1)
+        //get the instance id saved in the instancemanager struct
+        var ins = struct_get(global.instanceManager, argument0)
+        //retrieve the location this id is saved within the room lists
+        var insindex = ds_list_find_index(global.escaperoom, ins)
+        //if the index exist replace its value with the updated instance id
+        if (insindex != -1)
         {
-            ds_list_add(global.escaperoom, argument1)
+            ds_list_replace(global.escaperoom, insindex, argument1)
         }
-        if (ds_list_find_index(global.baddieroom, ins) != -1)
+        //repeat for all lists
+        insindex = ds_list_find_index(global.baddieroom, ins)
+        if (insindex != -1)
         {
-            //show_message(ds_list_find_value(global.baddieroom, ds_list_find_index(global.baddieroom, ins)))
-            ds_list_add(global.baddieroom, argument1)
+            ds_list_replace(global.baddieroom, insindex, argument1)
         }
-        if (ds_list_find_index(global.saveroom, ins) != -1)
+        insindex = ds_list_find_index(global.saveroom, ins)
+        if (insindex != -1)
         {
-            //show_message(ds_list_find_value(global.saveroom, ds_list_find_index(global.saveroom, ins)))
-            ds_list_add(global.saveroom, argument1)
+            ds_list_replace(global.saveroom, insindex, argument1)
         }
     }
-
+    //finally update/add the id in the instancemanager
     instanceManager_add(argument0, argument1);
 }
 

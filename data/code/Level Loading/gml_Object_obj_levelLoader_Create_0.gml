@@ -16,7 +16,7 @@ var insts = struct_get(data, "instances");
 for (var i = 0; i < array_length(data.instances); i ++)
 {
     insData = insts[i]
-    levelInst = global.currentRoom + "_" + string(i);
+    levelInst = instanceManager_getKey(i);
     if (!insData.deleted)// and !levelMemory_get(levelInst))
     {
         var l = _stGet("insData.layer");
@@ -26,7 +26,7 @@ for (var i = 0; i < array_length(data.instances); i ++)
         if(objIndex >= 0){
             var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), objIndex)
             if(instance_exists(ins)){
-                instanceManager_checkAndSwitch(i, ins);
+                instanceManager_checkAndSwitch(levelInst, ins);
                 
                 ins.flipX = false;
                 ins.flipY = false;
