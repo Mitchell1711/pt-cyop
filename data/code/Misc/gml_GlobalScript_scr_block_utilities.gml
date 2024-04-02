@@ -76,7 +76,7 @@ function scr_cutoff() //gml_Script_scr_cutoff
         }
         else
         {
-            var num = instance_place_list((x + d[0]), (y + d[1]), 467, list, 0)
+            var num = instance_place_list((x + d[0]), (y + d[1]), obj_cutoff, list, 0)
             for (var j = 0; j < ds_list_size(list); j++)
             {
                 var b = ds_list_find_value(list, j)
