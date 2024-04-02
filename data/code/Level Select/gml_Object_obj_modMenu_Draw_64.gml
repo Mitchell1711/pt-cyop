@@ -77,14 +77,17 @@ if (key_jump)
                 if(global.charSelected == 0){
                     global.swapmode = false
                     ispeppino = true
+                    obj_savesystem.ispeppino = true
                 }
                 else if(global.charSelected == 1){
                     global.swapmode = false
                     ispeppino = false
+                    obj_savesystem.ispeppino = false
                 }
                 else if(global.charSelected == 2){
                     global.swapmode = true
                     ispeppino = true
+                    obj_savesystem.ispeppino = true
                 }
                 scr_characterspr()
             }
