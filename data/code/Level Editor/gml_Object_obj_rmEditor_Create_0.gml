@@ -85,6 +85,8 @@ function saveData() //gml_Script_saveData
 {
     data.editorVersion = global.editorVersion;
     var jText = json_stringify(data, true);
+
+    saveTileDataBuffer(data)
     
     var b = 1;
     var p = "levels/{level}/rooms/";

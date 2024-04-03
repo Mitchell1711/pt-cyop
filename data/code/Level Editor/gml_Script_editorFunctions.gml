@@ -396,6 +396,67 @@ function doOverlap(argument0, argument1)
     return true;
 }
 
+function saveTileDataBuffer(argument0){ //uses room data struct
+    var tiledata = argument0.tile_data
+    var tilelayernames = variable_struct_get_names(tiledata)
+    //find the amount of tiles that need to be stored
+    var size = 0
+    for(var i = 0; i < array_length(tilelayernames); i++){
+        size += variable_struct_names_count(struct_get(tiledata, tilelayernames[i]))
+    }
+    //each tile is this big
+    /* 1 1 byte signed int (tilelayer)
+    2 2 byte unsigned int (level xy coords)
+    2 1 byte unsigned int (tileset xy coords)
+    1 string for around 32 bytes (tileset name)
+    1 1 byte unsigned integer (autotile index)
+    1 bool (if autotile enabled)
+    2 bools (xflip yflip) */
+    //adds up to 38 bytes bits per tile
+
+    var tilebuffer = buffer_create(99 * size, buffer_grow, 1)
+    //write editor version
+    buffer_write(tilebuffer, buffer_u8, global.editorVersion)
+    for(var i = 0; i < array_length(tilelayernames); i++){
+        //get the tilelayer struct
+        var tilelayer = struct_get(tiledata, tilelayernames[i])
+        //get all the tile names from the tilelayer
+        var tilenames = variable_struct_get_names(tilelayer)
+        
+        for(var j = 0; j < array_length(tilenames); j++){
+            //grab the struct from the tile name
+            var tile = struct_get(tilelayer, tilenames[j])
+            //write tile layer
+            buffer_write(tilebuffer, buffer_s8, real(tilelayernames[i]))
+            var coords = string_split(tilenames[j], "_")
+            //write x coord
+            buffer_write(tilebuffer, buffer_u16, real(coords[0]))
+            //write y coord
+            buffer_write(tilebuffer, buffer_u16, real(coords[1]))
+            var tilesetcoords = struct_get(tile, "coord")
+            //write tileset x coord
+            buffer_write(tilebuffer, buffer_u8, tilesetcoords[0])
+            //write tileset y coord
+            buffer_write(tilebuffer, buffer_u8, tilesetcoords[1])
+            //write tileset name
+            buffer_write(tilebuffer, buffer_string, struct_get(tile, "tileset"))
+            //write autotile index
+            buffer_write(tilebuffer, buffer_u8, struct_get(tile, "autotile_index"))
+            //write autotile bool
+            buffer_write(tilebuffer, buffer_bool, struct_get(tile, "autotile"))
+            //TODO ADD FLIP BOOLS
+            //write flipx bool
+            buffer_write(tilebuffer, buffer_bool, 0)
+            //write flipy bool
+            buffer_write(tilebuffer, buffer_bool, 0)
+        }
+    }
+
+    buffer_save(tilebuffer, fstring(mod_folder("levels/{level}/rooms/{lvlRoom}.tiles")))
+
+    buffer_delete(tilebuffer)
+}
+
 function loadOldLevel(argument0) //path
 {
     //data = roomData_new();

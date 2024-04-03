@@ -926,9 +926,10 @@ function data_compatibility(argument0)
             var objid = 0
             var prevobjid = 0
             var newobjid = 0
-            for(var i = 0; i < array_length(d.instances); i++){
+            var instances = d.instances
+            for(var i = 0; i < array_length(instances); i++){
                 //get object id from room json
-                objid = struct_get(d.instances[i], "object")
+                objid = struct_get(instances[i], "object")
                 //prevent array index crash
                 if(objid <= array_length(global.objectMap)){
                     //if statement so we dont need to look for the same updated object id again
