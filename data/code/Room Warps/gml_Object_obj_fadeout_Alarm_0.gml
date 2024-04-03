@@ -71,8 +71,9 @@ if instance_exists(obj_player)
             //var data = roomFile_getData(lvl, rm);
             //file_text_close(f);
             
-            var lTime = current_time;
-            var fName = mod_folder("levels/") + lvl + "/rooms/" + rm + ".json";
+            //var t = get_timer()
+            var fName = mod_folder("levels/" + lvl + "/rooms/" + rm + ".json")
+            var tName = mod_folder("levels/" + lvl + "/rooms/" + rm + ".tiles")
             //show_message(fName);
             if (!file_exists(fName))
             {
@@ -80,10 +81,12 @@ if instance_exists(obj_player)
             }
             var jText = file_text_read_all(fName);
             global.roomData = json_parse(jText);
+            if(file_exists(tName)){
+                loadTileDataBuffer(global.roomData, tName)
+            }
             global.roomData = data_compatibility(global.roomData);
-            //show_message((current_time - lTime) / 1000)
+            //show_message("Elapsed: " + string(get_timer() - t))
             
-            //show_message(data)
             prepareCustomLevel(global.roomData, tRoom);
             
             with (obj_player)

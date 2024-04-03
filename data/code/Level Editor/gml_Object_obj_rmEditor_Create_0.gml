@@ -81,13 +81,26 @@ function roomPath() //gml_Script_roomPath
     return fstring(mod_folder("levels/{level}/rooms/{lvlRoom}.json"));
 }
 
+function tilePath()
+{
+    return fstring(mod_folder("levels/{level}/rooms/{lvlRoom}.tiles"))
+}
+
 function saveData() //gml_Script_saveData
 {
     data.editorVersion = global.editorVersion;
-    var jText = json_stringify(data, true);
 
-    saveTileDataBuffer(data)
-    
+    saveTileDataBuffer(data, tilePath())
+
+    //create tempdata struct without the tiles saved
+    var tempData = {
+        editorVersion: data.editorVersion,
+        properties: data.properties,
+        instances: data.instances,
+        backgrounds : data.backgrounds
+    }
+    var jText = json_stringify(tempData, true);
+
     var b = 1;
     var p = "levels/{level}/rooms/";
     var backup = mod_folder(fstring(p + "backups/{lvlRoom}.backup"))
@@ -137,6 +150,12 @@ function loadData() //gml_Script_loadData
         //var f = file_text_open_read(roomPath());
         var jText = file_text_read_all(roomPath());
         data = json_parse(jText);
+
+        //load in tile data from .tiles buffer file
+        if(file_exists(tilePath())){
+            loadTileDataBuffer(data, tilePath())
+        }
+
         data = data_compatibility(data);
         //file_text_close(f);
         
@@ -304,7 +323,8 @@ function addTile(argument0, argument1, argument2, argument3, argument4) //tilese
         ["tileset", name],
         ["coord", coord],
         ["autotile", argument4],
-        ["autotile_index", tileset_autotileIndex]
+        ["autotile_index", tileset_autotileIndex],
+        ["flipped", [0, 0]]
     ]))
     
     //pleaseExist = "data.tile_data." + tLayer + "." + string(xx) + "_" + string(yy)

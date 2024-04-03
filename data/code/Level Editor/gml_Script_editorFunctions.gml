@@ -396,64 +396,152 @@ function doOverlap(argument0, argument1)
     return true;
 }
 
-function saveTileDataBuffer(argument0){ //uses room data struct
+function saveTileDataBuffer(argument0, argument1){ //room data struct, save path
     var tiledata = argument0.tile_data
     var tilelayernames = variable_struct_get_names(tiledata)
+    var tilelayersize = array_length(tilelayernames)
     //find the amount of tiles that need to be stored
     var size = 0
-    for(var i = 0; i < array_length(tilelayernames); i++){
+    for(var i = 0; i < tilelayersize; i++){
         size += variable_struct_names_count(struct_get(tiledata, tilelayernames[i]))
     }
     //each tile is this big
-    /* 1 1 byte signed int (tilelayer)
-    2 2 byte unsigned int (level xy coords)
-    2 1 byte unsigned int (tileset xy coords)
-    1 string for around 32 bytes (tileset name)
-    1 1 byte unsigned integer (autotile index)
+    /* 4 byte unsigned int (level xy coords)
+    2 byte unsigned int (tileset xy coords)
+    estimated 8 byte string with compression (tileset name)
+    1 byte unsigned integer (autotile index)
     1 bool (if autotile enabled)
     2 bools (xflip yflip) */
-    //adds up to 38 bytes bits per tile
+    //adds up to an estimated 15 bytes per tile
+    //plus 9 bytes for each tile layer
 
-    var tilebuffer = buffer_create(99 * size, buffer_grow, 1)
+    var tilebuffer = buffer_create((9 * tilelayersize) + (15 * size), buffer_grow, 1)
+    var prevtileset = ""
+    //these are used to offset the x and y positions to a value above 0, since unsigned integers don't allow values below 0
+    //unsigned integers are also not ideal since the room coords can be offset by a lot
+    var roomX = struct_get(argument0.properties, "roomX")
+    var roomY = struct_get(argument0.properties, "roomY")
     //write editor version
     buffer_write(tilebuffer, buffer_u8, global.editorVersion)
+    //write amount of tilelayers
+    buffer_write(tilebuffer, buffer_u8, array_length(tilelayernames))
     for(var i = 0; i < array_length(tilelayernames); i++){
         //get the tilelayer struct
         var tilelayer = struct_get(tiledata, tilelayernames[i])
         //get all the tile names from the tilelayer
         var tilenames = variable_struct_get_names(tilelayer)
-        
+        //write tile layer
+        buffer_write(tilebuffer, buffer_s8, real(tilelayernames[i]))
+        //write the amount of tilenames inside this layer
+        buffer_write(tilebuffer, buffer_u16, array_length(tilenames))
         for(var j = 0; j < array_length(tilenames); j++){
             //grab the struct from the tile name
             var tile = struct_get(tilelayer, tilenames[j])
-            //write tile layer
-            buffer_write(tilebuffer, buffer_s8, real(tilelayernames[i]))
             var coords = string_split(tilenames[j], "_")
             //write x coord
-            buffer_write(tilebuffer, buffer_u16, real(coords[0]))
+            buffer_write(tilebuffer, buffer_u16, real(coords[0]) - roomX)
             //write y coord
-            buffer_write(tilebuffer, buffer_u16, real(coords[1]))
+            buffer_write(tilebuffer, buffer_u16, real(coords[1]) - roomY)
             var tilesetcoords = struct_get(tile, "coord")
             //write tileset x coord
             buffer_write(tilebuffer, buffer_u8, tilesetcoords[0])
             //write tileset y coord
             buffer_write(tilebuffer, buffer_u8, tilesetcoords[1])
-            //write tileset name
-            buffer_write(tilebuffer, buffer_string, struct_get(tile, "tileset"))
+            //write tileset name, compressed by not rewriting the same tileset string each time
+            //alternative would be changing the tileset format but that would require sorting the entire tile json data which would make loading older level files much slower
+            //also im not sure if its worth rewriting the tileset drawing code when this should still work fine
+            var tileset = struct_get(tile, "tileset")
+            if(tileset != prevtileset){
+                buffer_write(tilebuffer, buffer_string, struct_get(tile, "tileset"))
+                prevtileset = tileset
+            }
+            else{
+                buffer_write(tilebuffer, buffer_string, "")
+            }
             //write autotile index
             buffer_write(tilebuffer, buffer_u8, struct_get(tile, "autotile_index"))
             //write autotile bool
             buffer_write(tilebuffer, buffer_bool, struct_get(tile, "autotile"))
-            //TODO ADD FLIP BOOLS
+            //write flip bools
+            var flipped = variable_struct_exists(tile, "flipped") ? struct_get(tile, "flipped") : [0, 0]
             //write flipx bool
-            buffer_write(tilebuffer, buffer_bool, 0)
+            buffer_write(tilebuffer, buffer_bool, flipped[0])
             //write flipy bool
-            buffer_write(tilebuffer, buffer_bool, 0)
+            buffer_write(tilebuffer, buffer_bool, flipped[1])
         }
     }
 
-    buffer_save(tilebuffer, fstring(mod_folder("levels/{level}/rooms/{lvlRoom}.tiles")))
+    buffer_save(tilebuffer, argument1)
 
+    buffer_delete(tilebuffer)
+}
+
+function loadTileDataBuffer(argument0, argument1){ //data struct, load path
+    //create empty tile_data struct
+    variable_struct_set(argument0, "tile_data", {})
+    var tiledata = argument0.tile_data
+
+    //load in tile buffer and set search position to the start of the buffer
+    var tilebuffer = buffer_load(argument1)
+    buffer_seek(tilebuffer, buffer_seek_start, 0)
+
+    //get size of buffer to know where to stop reading
+    var size = buffer_get_size(tilebuffer)
+    //version is read for any compatibility related needs
+    var version = buffer_read(tilebuffer, buffer_u8)
+    //handling for tilename compression
+    var prevname = ""
+    //read out the amount of layers to loop over
+    var layeramount = buffer_read(tilebuffer, buffer_u8)
+
+    //get room offsets
+    var roomX = struct_get(argument0.properties, "roomX")
+    var roomY = struct_get(argument0.properties, "roomY")
+    for(var i = 0; i < layeramount; i++) {
+        var tLayer = string(buffer_read(tilebuffer, buffer_s8))
+        //create struct for layer
+        variable_struct_set(tiledata, tLayer, {})
+        var layerStruct = variable_struct_get(tiledata, tLayer)
+        //retrieve amount of tiles in this layer
+        var tileamount = buffer_read(tilebuffer, buffer_u16)
+        //loop over the tiles stored in the buffer
+        for (var j = 0; j < tileamount; j++) {
+            //read x position
+            var xx = buffer_read(tilebuffer, buffer_u16) + roomX
+            //read y position
+            var yy = buffer_read(tilebuffer, buffer_u16) + roomY
+            //read coords
+            var coord = []
+            coord[0] = buffer_read(tilebuffer, buffer_u8)
+            coord[1] = buffer_read(tilebuffer, buffer_u8)
+            //read tileset name
+            var name = buffer_read(tilebuffer, buffer_string)
+            if(name == ""){
+                name = prevname
+            }
+            else{
+                prevname = name
+            }
+            //read autotile index
+            var autotileIndex = buffer_read(tilebuffer, buffer_u8)
+            //read autotile
+            var autotile = buffer_read(tilebuffer, buffer_bool)
+            //read flip
+            var flipped = []
+            flipped[0] = buffer_read(tilebuffer, buffer_bool)
+            flipped[1] = buffer_read(tilebuffer, buffer_bool)
+
+            //write buffer values to tile struct
+            variable_struct_set(layerStruct, string(xx) + "_" + string(yy), {
+                tileset: name,
+                coord: coord,
+                autotile: autotile,
+                autotile_index: autotileIndex,
+                flipped: flipped
+            })
+        }
+    }
+    
     buffer_delete(tilebuffer)
 }
 
