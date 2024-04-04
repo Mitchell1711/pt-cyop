@@ -561,9 +561,7 @@ function loadCustomLevel(argument0, argument1, argument2) // level name, wether 
     
     var lvlFolder = mod_folder("levels/" + argument0 + "/")
     
-    ini_open(lvlFolder + "level.ini")
-    var roomToLoad = ini_read_string("data", "mainroom", "main");
-    ini_close();
+    var roomToLoad = "main"
     //show_message(lvlFolder + "rooms/" + roomToLoad + ".json")
     var rm_txt = file_text_read_all(lvlFolder + "rooms/" + roomToLoad + ".json")
     var rm_data = json_parse(rm_txt);
@@ -575,8 +573,17 @@ function loadCustomLevel(argument0, argument1, argument2) // level name, wether 
     {
         global.levelcomplete = false;
     }
-    
-    prepareCustomLevel(rm_data, roomToLoad, argument1);
+
+    if(argument1){
+        prepareCustomLevel(rm_data, roomToLoad);
+    }
+    else{
+        with obj_player
+        {
+            targetRoom = roomToLoad;
+        }
+        instance_create(0, 0, obj_fadeout)
+    }
 }
 
 function get_roomData(argument0) //room name
@@ -586,27 +593,18 @@ function get_roomData(argument0) //room name
     return(json_parse(rm_txt));
 }
 
-function prepareCustomLevel(argument0, argument1, argument2) //room data struct, room name, instant (true) or fade out (false)
+function prepareCustomLevel(argument0, argument1) //room data struct, room name, instant (true) or fade out (false)
 {
-    if (is_undefined(argument2))
-        argument2 = true;
-        
+    var rm_tiles = mod_folder("levels/" + global.levelName + "/rooms/" + argument1 + ".tiles")
+    if file_exists(rm_tiles){
+        loadTileDataBuffer(argument0, rm_tiles)
+    }
+
     global.roomData = data_compatibility(argument0)
     //show_message(global.roomData);
-    if (argument2)
-    {
-        global.currentLevel = global.levelName;
-        global.currentRoom = argument1;
-        room_goto(rmPrepareLevel);
-    }
-    else
-    {
-        with obj_player
-        {
-            targetRoom = argument1;
-        }
-        instance_create(0, 0, obj_fadeout)
-    }
+    global.currentLevel = global.levelName;
+    global.currentRoom = argument1;
+    room_goto(rmPrepareLevel);
 }
 
 function gotoCustomLevel()
@@ -968,7 +966,6 @@ function data_compatibility(argument0)
     }
     //prevent compatibility from running multiple times
     _stSet("_temp.editorVersion", global.editorVersion)
-
     return _temp;
 }
 

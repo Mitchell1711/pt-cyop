@@ -1,3 +1,4 @@
+//var t = get_timer()
 data = global.roomData;
 var prop = data.properties;
 
@@ -12,7 +13,7 @@ layerForce = [];
 //show_message(global.levelMemory);
 
 var insts = struct_get(data, "instances");
-
+//var ti = get_timer()
 for (var i = 0; i < array_length(data.instances); i ++)
 {
     insData = insts[i]
@@ -72,7 +73,7 @@ for (var i = 0; i < array_length(data.instances); i ++)
         }
     }
 }
-
+//global.transitionTime += ("INSTANCES: " + string(get_timer() - ti)+"\n")
 /*for (var i = 0; i < array_length(roomInsts); i ++)
 {
     with roomInsts[i][0]
@@ -130,4 +131,5 @@ if (global.levelName == global.hubLevel)
         backtohubroom = rmModMenu;
     }
 }
+//global.transitionTime += ("LOADER: " + string(get_timer() - t)+"\n")
 //instance_create_layer(obj_player1, layer_get_id("Instances_1"), 100, 100);

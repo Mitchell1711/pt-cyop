@@ -178,6 +178,7 @@ function editor_folder(argument0)
 }
 
 global.roomData = undefined;
+//global.transitionTime = ""
 global.levelName = "test";
 global.editorRoomName = "main";
 global.hubLevel = "";

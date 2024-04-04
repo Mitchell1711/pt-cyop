@@ -44,6 +44,7 @@ if instance_exists(obj_player)
         }
         else
         {
+            //global.transitionTime = ""
             var lvl = global.levelName;
             var rm = tRoom;
             
@@ -55,37 +56,20 @@ if instance_exists(obj_player)
                 }
                 exit;
             }
-            /*if (rm == "secret" or rm == "room4")
-            {
-                show_message("sas")
-            }*/
-            /*var fName = "mod_assets/levels/" + lvl + "/rooms/" + rm + ".json";
-            //show_message(fName);
-            if (!file_exists(fName))
-            {
-                show_error("room " + fName + " doesn't exist.", true);
-            }
-            var f = file_text_open_read(fName);
-            var jText = file_text_read_all(f);
-            var data = json_parse(jText);*/
-            //var data = roomFile_getData(lvl, rm);
-            //file_text_close(f);
             
-            //var t = get_timer()
+            //var time = get_timer()
             var fName = mod_folder("levels/" + lvl + "/rooms/" + rm + ".json")
-            var tName = mod_folder("levels/" + lvl + "/rooms/" + rm + ".tiles")
             //show_message(fName);
             if (!file_exists(fName))
             {
                 show_error("room " + fName + " doesn't exist.", false);
             }
+            //var ti = get_timer()
             var jText = file_text_read_all(fName);
             global.roomData = json_parse(jText);
-            if(file_exists(tName)){
-                loadTileDataBuffer(global.roomData, tName)
-            }
-            global.roomData = data_compatibility(global.roomData);
-            //show_message("Elapsed: " + string(get_timer() - t))
+            
+            //global.transitionTime += ("JSON: " + string(get_timer() - ti)+"\n")
+            //global.transitionTime += ("TOTAL: " + string(get_timer() - time)+"\n")
             
             prepareCustomLevel(global.roomData, tRoom);
             

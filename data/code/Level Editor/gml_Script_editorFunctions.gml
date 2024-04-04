@@ -477,6 +477,7 @@ function saveTileDataBuffer(argument0, argument1){ //room data struct, save path
 }
 
 function loadTileDataBuffer(argument0, argument1){ //data struct, load path
+    //var t = get_timer()
     //create empty tile_data struct
     variable_struct_set(argument0, "tile_data", {})
     var tiledata = argument0.tile_data
@@ -543,6 +544,7 @@ function loadTileDataBuffer(argument0, argument1){ //data struct, load path
     }
     
     buffer_delete(tilebuffer)
+    //global.transitionTime += ("TILES: " + string(get_timer() - t)+"\n")
 }
 
 function loadOldLevel(argument0) //path
