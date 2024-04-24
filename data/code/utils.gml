@@ -989,11 +989,10 @@ function revert_object_ids(argument0){ //json location
     var data = json_parse(jText)
     file_text_close(f)
     //dont revert if the roomdata is already from an old version
-    if(struct_get(data, "editorVersion") < 6){
-        exit
+    if(struct_get(data, "editorVersion") <= 5){
+        exit;
     }
     var instancelist = struct_get(data, "instances")
-    var maplength = array_length(global.objectMap) - 1
     var objid = 0
     var prevobjid = 0
     var newobjid = 0
@@ -1005,11 +1004,7 @@ function revert_object_ids(argument0){ //json location
         //dont redo the search if we're searching for the same object as last time
         if(objid != prevobjid){
             //we start searching down from the new objid to save some time
-            for(var j = objid; j > 0; j--){
-                //prevent oob access
-                if(j > maplength){
-                    j = maplength
-                }
+            for(var j = 0; j < array_length(global.objectMap); j++){
                 //write the id if the object name is the same
                 if(objname == global.objectMap[j]){
                     newobjid = j
