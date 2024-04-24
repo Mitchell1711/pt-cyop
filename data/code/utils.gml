@@ -1003,7 +1003,6 @@ function revert_object_ids(argument0){ //json location
         objname = object_get_name(objid)
         //dont redo the search if we're searching for the same object as last time
         if(objid != prevobjid){
-            //we start searching down from the new objid to save some time
             for(var j = 0; j < array_length(global.objectMap); j++){
                 //write the id if the object name is the same
                 if(objname == global.objectMap[j]){
