@@ -415,108 +415,111 @@ function saveTileDataBuffer(argument0, argument1){ //room data struct, save path
     //adds up to an estimated 15 bytes per tile
     //plus 9 bytes for each tile layer
 
-    var tilebuffer = buffer_create((9 * tilelayersize) + (15 * size), buffer_grow, 1)
+    var tbuffer = buffer_create((9 * tilelayersize) + (15 * size), buffer_grow, 1)
     var prevtileset = ""
     //these are used to offset the x and y positions to a value above 0, since unsigned integers don't allow values below 0
     //unsigned integers are also not ideal since the room coords can be offset by a lot
     var roomX = struct_get(argument0.properties, "roomX")
     var roomY = struct_get(argument0.properties, "roomY")
     //write editor version
-    buffer_write(tilebuffer, buffer_u8, global.editorVersion)
+    buffer_write(tbuffer, buffer_u8, global.editorVersion)
     //write amount of tilelayers
-    buffer_write(tilebuffer, buffer_u8, array_length(tilelayernames))
-    for(var i = 0; i < array_length(tilelayernames); i++){
+    buffer_write(tbuffer, buffer_u8, array_length(tilelayernames))
+    var n = array_length(tilelayernames)
+    for(var i = 0; i < n; i++){
         //get the tilelayer struct
         var tilelayer = struct_get(tiledata, tilelayernames[i])
         //get all the tile names from the tilelayer
         var tilenames = variable_struct_get_names(tilelayer)
         //write tile layer
-        buffer_write(tilebuffer, buffer_s8, real(tilelayernames[i]))
+        buffer_write(tbuffer, buffer_s8, real(tilelayernames[i]))
         //write the amount of tilenames inside this layer
-        buffer_write(tilebuffer, buffer_u16, array_length(tilenames))
-        for(var j = 0; j < array_length(tilenames); j++){
+        buffer_write(tbuffer, buffer_u16, array_length(tilenames))
+        var m = array_length(tilenames)
+        for(var j = 0; j < m; j++){
             //grab the struct from the tile name
             var tile = struct_get(tilelayer, tilenames[j])
             var coords = string_split(tilenames[j], "_")
             //write x coord
-            buffer_write(tilebuffer, buffer_u16, real(coords[0]) - roomX)
+            buffer_write(tbuffer, buffer_u16, real(coords[0]) - roomX)
             //write y coord
-            buffer_write(tilebuffer, buffer_u16, real(coords[1]) - roomY)
+            buffer_write(tbuffer, buffer_u16, real(coords[1]) - roomY)
             var tilesetcoords = struct_get(tile, "coord")
             //write tileset x coord
-            buffer_write(tilebuffer, buffer_u8, tilesetcoords[0])
+            buffer_write(tbuffer, buffer_u8, tilesetcoords[0])
             //write tileset y coord
-            buffer_write(tilebuffer, buffer_u8, tilesetcoords[1])
+            buffer_write(tbuffer, buffer_u8, tilesetcoords[1])
             //write tileset name, compressed by not rewriting the same tileset string each time
             //alternative would be changing the tileset format but that would require sorting the entire tile json data which would make loading older level files much slower
             //also im not sure if its worth rewriting the tileset drawing code when this should still work fine
             var tileset = struct_get(tile, "tileset")
             if(tileset != prevtileset){
-                buffer_write(tilebuffer, buffer_string, struct_get(tile, "tileset"))
+                buffer_write(tbuffer, buffer_string, struct_get(tile, "tileset"))
                 prevtileset = tileset
             }
             else{
-                buffer_write(tilebuffer, buffer_string, "")
+                buffer_write(tbuffer, buffer_string, "")
             }
             //write autotile index
-            buffer_write(tilebuffer, buffer_u8, struct_get(tile, "autotile_index"))
+            buffer_write(tbuffer, buffer_u8, struct_get(tile, "autotile_index"))
             //write autotile bool
-            buffer_write(tilebuffer, buffer_bool, struct_get(tile, "autotile"))
+            buffer_write(tbuffer, buffer_bool, struct_get(tile, "autotile"))
             //write flip bools
             var flipped = variable_struct_exists(tile, "flipped") ? struct_get(tile, "flipped") : [0, 0]
             //write flipx bool
-            buffer_write(tilebuffer, buffer_bool, flipped[0])
+            buffer_write(tbuffer, buffer_bool, flipped[0])
             //write flipy bool
-            buffer_write(tilebuffer, buffer_bool, flipped[1])
+            buffer_write(tbuffer, buffer_bool, flipped[1])
         }
     }
 
-    buffer_save(tilebuffer, argument1)
+    buffer_save(tbuffer, argument1)
 
-    buffer_delete(tilebuffer)
+    buffer_delete(tbuffer)
 }
 
 function loadTileDataBuffer(argument0, argument1){ //data struct, load path
-    //var t = get_timer()
-    //create empty tile_data struct
-    variable_struct_set(argument0, "tile_data", {})
-    var tiledata = argument0.tile_data
+    global.tilebuffer = buffer_load(argument1)
+    if(!variable_struct_exists(argument0, "tile_data")){
+        variable_struct_set(argument0, "tile_data", {})
+    }
+}
 
-    //load in tile buffer and set search position to the start of the buffer
-    var tilebuffer = buffer_load(argument1)
-    buffer_seek(tilebuffer, buffer_seek_start, 0)
+function loadTileChunk(argument0, argument1){ //data struct, chunk to load
+    var tiledata = argument0.tile_data
+    buffer_seek(global.tilebuffer, buffer_seek_start, 0)
 
     //get size of buffer to know where to stop reading
-    var size = buffer_get_size(tilebuffer)
+    var size = buffer_get_size(global.tilebuffer)
     //version is read for any compatibility related needs
-    var version = buffer_read(tilebuffer, buffer_u8)
+    var version = buffer_read(global.tilebuffer, buffer_u8)
     //handling for tilename compression
     var prevname = ""
     //read out the amount of layers to loop over
-    var layeramount = buffer_read(tilebuffer, buffer_u8)
+    var layeramount = buffer_read(global.tilebuffer, buffer_u8)
 
     //get room offsets
     var roomX = struct_get(argument0.properties, "roomX")
     var roomY = struct_get(argument0.properties, "roomY")
-    for(var i = 0; i < layeramount; i++) {
-        var tLayer = string(buffer_read(tilebuffer, buffer_s8))
+    repeat (layeramount) {
+        var tLayer = string(buffer_read(global.tilebuffer, buffer_s8))
         //create struct for layer
         variable_struct_set(tiledata, tLayer, {})
         var layerStruct = variable_struct_get(tiledata, tLayer)
         //retrieve amount of tiles in this layer
-        var tileamount = buffer_read(tilebuffer, buffer_u16)
+        var tileamount = buffer_read(global.tilebuffer, buffer_u16)
         //loop over the tiles stored in the buffer
-        for (var j = 0; j < tileamount; j++) {
+        repeat (tileamount) {
             //read x position
-            var xx = buffer_read(tilebuffer, buffer_u16) + roomX
+            var xx = buffer_read(global.tilebuffer, buffer_u16) + roomX
             //read y position
-            var yy = buffer_read(tilebuffer, buffer_u16) + roomY
+            var yy = buffer_read(global.tilebuffer, buffer_u16) + roomY
             //read coords
             var coord = []
-            coord[0] = buffer_read(tilebuffer, buffer_u8)
-            coord[1] = buffer_read(tilebuffer, buffer_u8)
+            coord[0] = buffer_read(global.tilebuffer, buffer_u8)
+            coord[1] = buffer_read(global.tilebuffer, buffer_u8)
             //read tileset name
-            var name = buffer_read(tilebuffer, buffer_string)
+            var name = buffer_read(global.tilebuffer, buffer_string)
             if(name == ""){
                 name = prevname
             }
@@ -524,13 +527,13 @@ function loadTileDataBuffer(argument0, argument1){ //data struct, load path
                 prevname = name
             }
             //read autotile index
-            var autotileIndex = buffer_read(tilebuffer, buffer_u8)
+            var autotileIndex = buffer_read(global.tilebuffer, buffer_u8)
             //read autotile
-            var autotile = buffer_read(tilebuffer, buffer_bool)
+            var autotile = buffer_read(global.tilebuffer, buffer_bool)
             //read flip
             var flipped = []
-            flipped[0] = buffer_read(tilebuffer, buffer_bool)
-            flipped[1] = buffer_read(tilebuffer, buffer_bool)
+            flipped[0] = buffer_read(global.tilebuffer, buffer_bool)
+            flipped[1] = buffer_read(global.tilebuffer, buffer_bool)
 
             //write buffer values to tile struct
             variable_struct_set(layerStruct, string(xx) + "_" + string(yy), {
@@ -542,9 +545,11 @@ function loadTileDataBuffer(argument0, argument1){ //data struct, load path
             })
         }
     }
-    
-    buffer_delete(tilebuffer)
     //global.transitionTime += ("TILES: " + string(get_timer() - t)+"\n")
+}
+
+function unloadTileDataBuffer(){
+    buffer_delete(global.tilebuffer)
 }
 
 function loadOldLevel(argument0) //path
