@@ -1,4 +1,4 @@
-If you opened your level in this patch you'll need to create a backport with the backport option on the level select menu so it's playable again on older CYOP versions. Still, remember to always make backups when running still in-development patches.
+Levels opened in the editor with this patch will have have their object IDs updated which will cause them to not work on older versions, you can use the backport feature on the level select to create a backwards compatible copy of the level. Still, remember to always make backups when running still in-development patches.
 
 # pt-new-level-editor
 Public repo for PizzaTower's Make your own Pizza mod
