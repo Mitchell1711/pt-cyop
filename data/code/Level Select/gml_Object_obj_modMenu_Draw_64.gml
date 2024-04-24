@@ -422,7 +422,8 @@ for (var cind = 0; cind < array_length(w_openCanvas); cind ++)
                     "Type: " + tTypes[towerList[t][3]],
                     "",
                     "Open assets folder",
-                    "Share this tower"
+                    "Share this tower",
+                    "Backport tower"
                 ]
                 
                 if (opList[1] == "Main Level: ") opList[1] += "(not set)";

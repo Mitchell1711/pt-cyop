@@ -53,8 +53,18 @@ switch ev.name
                         show_message("done?");
                     }
                 }
-                
             break;
+            case 6:
+                var q = show_question("Do you want to create a backport of your tower so its playable on older CYOP versions?")
+
+                if(q){
+                    var file = game_save_id + string_replace_all(filename_dir(towerList[towerSelected][1]), "/", "\\")
+                    var filebp = file + " - Backport"
+                    //this also backports all the object ids if arg4 is set to true because i love coding
+                    file_copy_dir(file, filebp, fa_directory, true)
+                    show_message("Done!")
+                }
+            break
         }
     break;
 }

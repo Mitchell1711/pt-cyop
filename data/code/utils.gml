@@ -982,6 +982,103 @@ function fix_spawner_variables(argument0, argument1){
     }
     variable_struct_set(argument0, argument1, content)
 }
+
+function revert_object_ids(argument0){ //json location
+    var f = file_text_open_read(argument0)
+    var jText = file_text_read_all(f)
+    var data = json_parse(jText)
+    file_text_close(f)
+    //dont revert if the roomdata is already from an old version
+    if(struct_get(data, "editorVersion") < 6){
+        exit
+    }
+    var instancelist = struct_get(data, "instances")
+    var maplength = array_length(global.objectMap) - 1
+    var objid = 0
+    var prevobjid = 0
+    var newobjid = 0
+    var todelete = []
+    var foundobject = false
+    for(var i = 0; i < array_length(instancelist); i++){
+        objid = struct_get(instancelist[i], "object")
+        objname = object_get_name(objid)
+        //dont redo the search if we're searching for the same object as last time
+        if(objid != prevobjid){
+            //we start searching down from the new objid to save some time
+            for(var j = objid; j > 0; j--){
+                //prevent oob access
+                if(j > maplength){
+                    j = maplength
+                }
+                //write the id if the object name is the same
+                if(objname == global.objectMap[j]){
+                    newobjid = j
+                    foundobject = true
+                    break
+                }
+                foundobject = false
+            }
+        }
+        if(foundobject){
+            variable_struct_set(instancelist[i], "object", newobjid)
+        }
+        //if object wasnt found remove it later
+        else{
+            array_push(todelete, i)
+        }
+    }
+    //delete indexes with non-existent objects
+    //we do this backwards so that the array indexes dont shift on us
+    for(var i = array_length(todelete) - 1; i > 0; i--){
+        array_delete(instancelist, todelete[i], 1)
+    }
+    variable_struct_set(data, "instances", instancelist)
+    //set roomdata version back to 5, which was the last perez cyop patch
+    variable_struct_set(data, "editorVersion", 5)
+    //save to json
+    jText = json_stringify(data, true)
+    json_save(jText, argument0)
+}
+
+//taken from yellowafterlife bc I'm lazy credit goes to them
+function file_copy_dir(argument0, argument1, argument2, argument3){ //from, to, include directories (fa_directory), do backport
+    // Copies contents from source directory to target directory.
+    var fname = ""
+    var i = 0
+    var from = ""
+    var to = ""
+    var file = []
+    // create directory if it doesn't exist yet:
+    if (!directory_exists(argument1)) directory_create(argument1)
+    // push matching files into array:
+    // (has to be done separately due to possible recursion)
+    fname = file_find_first(argument0 + "/*.*", argument2)
+    while (fname != "") {
+        // don't include current/parent directory "matches":
+        if (fname == ".") continue
+        if (fname == "..") continue
+        // push file into array
+        array_push(file, fname)
+        fname = file_find_next()
+    }
+    file_find_close()
+    // process found files:
+    repeat (array_length(file)) {
+        fname = file[i]
+        i += 1
+        from = argument0 + "/" + fname
+        to = argument1 + "/" + fname
+        if (file_attributes(from, fa_directory)) {
+            file_copy_dir(from, to, argument2, argument3) // recursively copy directories
+        } else {
+            file_copy(from, to) // copy files as normal
+            //backporting wow cool
+            if(argument3 && string_ends_with(argument1, "rooms") && string_ends_with(to, ".json")){
+                revert_object_ids(to)
+            }
+        }
+    }
+}
     
 function ask_or_not(argument0, argument1)
 {
