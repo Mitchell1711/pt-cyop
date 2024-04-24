@@ -1,4 +1,4 @@
-For those here to download and play around with the currently WIP xdelta (which spread way further than I expected), do NOT save any of your previous levels in this version (so don't open them in the editor at all). All of the object IDs got changed between updates so if a room on this version gets changed all your placed object will not load correctly on CYOP versions running on the old update. Yes, there's a backport feature planned, no, if you fuck up your level then I cannot help you. Remember to always make backups when running still in-development patches.
+If you opened your level in this patch you'll need to create a backport with the backport option on the level select menu so it's playable again on older CYOP versions. Still, remember to always make backups when running still in-development patches.
 
 # pt-new-level-editor
 Public repo for PizzaTower's Make your own Pizza mod
