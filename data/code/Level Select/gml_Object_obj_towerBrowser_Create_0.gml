@@ -151,8 +151,10 @@ function tbrowser_recieveList() //result array of levels
     var l = argument0
     for (var i = 0; i < array_length(l); i ++)
     {
-        var t = tbrowser_addTower(l[i]);
-        tbrowser_requestImage(t);
+        if(is_array(l[i]._aFiles)){
+            var t = tbrowser_addTower(l[i]);
+            tbrowser_requestImage(t);
+        }
     }
 }
 

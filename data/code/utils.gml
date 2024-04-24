@@ -926,9 +926,10 @@ function data_compatibility(argument0)
             var objid = 0
             var prevobjid = 0
             var newobjid = 0
-            for(var i = 0; i < array_length(d.instances); i++){
+            var instancelist = struct_get(_temp, "instances")
+            for(var i = 0; i < array_length(instancelist); i++){
                 //get object id from room json
-                objid = struct_get(d.instances[i], "object")
+                objid = struct_get(instancelist[i], "object")
                 //prevent array index crash
                 if(objid <= array_length(global.objectMap)){
                     //if statement so we dont need to look for the same updated object id again
@@ -938,29 +939,20 @@ function data_compatibility(argument0)
                     }
                     prevobjid = objid
                     //update the loaded roomdata with the new object id
-                    variable_struct_set(_temp.instances[i], "object", newobjid)
-                    //fix spawn variables
-                    //this shit doesnt work and i cant figure out why
-                    //it keeps grabbing a struct that doesnt exist despite me checking beforehand with variable_struct_exists
-                    /* switch newobjid{
-                        case obj_conveyorspawner:
-                        case obj_conveyordespawner:
-                        case obj_railh:
-                        case obj_railv:
-                            var objectlist = fix_spawner_variables(d.instances[i].variables, "objectlist")
-                            if(objectlist != undefined)
-                                variable_struct_set(_temp.instances[i].variables, "objectlist", objectlist)
-                        break
-                        case obj_fakesanta:
-                            var objectlist = fix_spawner_variables(d.instances[i].variables, "content")
-                            if(objectlist != undefined)
-                                variable_struct_set(_temp.instances[i].variables, "content", objectlist)
-                        break
-                    } */
+                    variable_struct_set(instancelist[i], "object", newobjid)
+                    //grab variables struct from object
+                    var varstruct = variable_struct_get(instancelist[i], "variables")
+                    //fix spawner object ids
+                    if(variable_struct_exists(varstruct, "content")){
+                        fix_spawner_variables(varstruct, "content")
+                    }
+                    if(variable_struct_exists(varstruct, "objectlist")){
+                        fix_spawner_variables(varstruct, "objectlist")
+                    }
                 }
                 //if the objid is larger than the objectcompat then its most likely from a modded version
                 else{
-                    variable_struct_set(_temp.instances[i], "object", undefined)
+                    variable_struct_set(instancelist[i], "object", undefined)
                 }
             }
         break
@@ -972,25 +964,23 @@ function data_compatibility(argument0)
 }
 
 function fix_spawner_variables(argument0, argument1){
-    //check if struct exists before grabbing it
-    if(variable_struct_exists(argument0, argument1)){
-        var objectlist = struct_get(argument0, argument1)
-        //check if its an array or not
-        if(is_array(objectlist)){
-            for(var j = 0; j < array_length(objectlist); j++){
-                var newid = global.objectMap[objectlist[j]]
-                objectlist[j] = asset_get_index(newid)
-            }
+    var content = struct_get(argument0, argument1)
+    //exit if its already a string
+    if(is_string(content)){
+        exit
+    }
+    //check if its an array or not
+    if(is_array(content)){
+        for(var j = 0; j < array_length(content); j++){
+            var newid = global.objectMap[content[j]]
+            content[j] = asset_get_index(newid)
         }
-        else{
-            var newid = global.objectMap[objectlist[j]]
-            objectlist = asset_get_index(newid)
-        }
-        return objectlist
     }
     else{
-        return undefined
+        var newid = global.objectMap[content]
+        content = asset_get_index(newid)
     }
+    variable_struct_set(argument0, argument1, content)
 }
     
 function ask_or_not(argument0, argument1)
@@ -1282,10 +1272,9 @@ function cursor_hud_position()
 
 function json_save(argument0, argument1) // string, path
 {
-    var b = buffer_create(string_length(argument0), buffer_fixed, 1);
-    buffer_write(b, buffer_text, argument0);
-    buffer_save(b, argument1)
-    buffer_delete(b);
+    var file = file_text_open_write(argument1);
+    file_text_write_string(file, argument0);
+    file_text_close(file);
 }
 
 function camera_get_limits(argument0, argument1, argument2, argument3)
