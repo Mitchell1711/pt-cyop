@@ -1,9 +1,8 @@
 instance_destroy(obj_swapmodefollow)
 global.swapmode = 0
-swapmodespr = [spr_mainmenu_pepicon, spr_mainmenu_noiseswapicon, spr_mainmenu_swapicon]
-swapsprindex = 0
-swapx = 920
-swapy = 60
+swapsprite = _spr("modmenu_charicon")
+swapx = 910
+swapy = 40
 swapystart = swapy
 with (obj_player)
     state = states.titlescreen

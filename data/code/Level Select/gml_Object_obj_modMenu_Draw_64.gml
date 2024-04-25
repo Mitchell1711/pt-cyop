@@ -253,8 +253,29 @@ draw_text(logoX + 900, 5 * dsin(current_time / 10) + logoY + 170, obj_modAssets.
 //draw_sprite(logoSpr, 0, ((obj_screensizer.actual_width - sprite_get_width(logoSpr) - 20 + logoX) - w) % w, 20 + logoY);
 
 //draw swap icon
-draw_sprite(swapmodespr[global.charSelected], swapsprindex, swapx, swapy)
-swapsprindex += 0.05
+swapy = clamp(swapy, swapystart, swapystart + 10)
+draw_sprite(swapsprite, global.charSelected, swapx, swapy)
+var icon = tdp_get_tutorial_icon("player_attack")
+if ((icon != -4)){
+    var swapcx = swapx - 45
+    var swapcy = swapy + 10
+    draw_sprite(icon.sprite_index, icon.image_index, swapcx, swapcy)
+    if ((icon.str != ""))
+    {
+        var f = draw_get_font()
+        var c = draw_get_color()
+        draw_set_halign(fa_center)
+        draw_set_valign(fa_middle)
+        draw_set_font(global.tutorialfont)
+        draw_set_color(c_black)
+        var ox = (sprite_get_xoffset(spr_tutorialfont) / 2)
+        var oy = (sprite_get_yoffset(spr_tutorialfont) / 2)
+        draw_text(((swapcx + 16) - ox), ((swapcy + 14) - oy), icon.str)
+        draw_set_color(c)
+        draw_set_font(f)
+        draw_set_valign(fa_top)
+    }
+}
 
 draw_set_halign(fa_left);
 draw_set_font(global.bigfont)
