@@ -254,7 +254,7 @@ draw_text(logoX + 900, 5 * dsin(current_time / 10) + logoY + 170, obj_modAssets.
 
 //draw swap icon
 swapy = clamp(swapy, swapystart, swapystart + 10)
-draw_sprite(swapsprite, global.charSelected, swapx, swapy)
+draw_sprite(_spr("modmenu_charicon"), global.charSelected, swapx, swapy)
 var icon = tdp_get_tutorial_icon("player_attack")
 if ((icon != -4)){
     var swapcx = swapx - 45

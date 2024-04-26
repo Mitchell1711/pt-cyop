@@ -1,6 +1,5 @@
 instance_destroy(obj_swapmodefollow)
 global.swapmode = 0
-swapsprite = _spr("modmenu_charicon")
 swapx = 910
 swapy = 40
 swapystart = swapy
