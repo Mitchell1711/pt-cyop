@@ -1462,11 +1462,15 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                 //dragging code
                 else{
                     cursorImage = 5
+                    cursorNotice = "Use the mouse wheel or Q/E to rescale"
                     //move with cursor
                     variable_struct_set(levelSettings.noiseHeads[nselect], "x", onX / cscale)
                     variable_struct_set(levelSettings.noiseHeads[nselect], "y", onY / cscale)
                     //increase and decrease scale
                     var scaling =  mouse_wheel_up() - mouse_wheel_down()
+                    if(scaling == 0){
+                        scaling = keyboard_check(ord("Q")) - keyboard_check(ord("E"))
+                    }
                     var scale = struct_get(levelSettings.noiseHeads[nselect], "scale")
                     variable_struct_set(levelSettings.noiseHeads[nselect], "scale", (scale + (0.05 * scaling)))
                     //place noisehead again
