@@ -703,6 +703,12 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                     cursorImage = 2;
             }
         break;
+        case st_popup:
+            if(mouse_check_button(mb_left)){
+                editor_state = st_edit
+                editorWindowUpdate()
+            }
+        break
     }
     
     // zooming in out
@@ -1162,7 +1168,7 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                 else // level
                 {
                     var mInd = floor(onY / 16);
-                    if (mInd == clamp(mInd, 0, 7))
+                    if (mInd == clamp(mInd, 0, 8))
                     {
                         settingsHovering = mInd;
                     }
@@ -1225,10 +1231,14 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                                     txt = "levelSettings.titleSongN"
                                 }
                                 
-                                
-                                
                                 var nd = wCanvas_open_dropdown("bigDropdown", cursorX / w_scale, cursorY / w_scale, opts, _stGet(txt), "title" + cb, "Input " + prompt + " name");
                             break;
+                            case 8:
+                                editor_state = st_popup
+                                currnoisehead = random_range(0, sprite_get_number(spr_titlecard_noise) - 1)
+                                editorWindowUpdate()
+                                wCanvas_open("noiseheads", noiseX, noiseY);
+                            break
                         }
                     }
                 }
@@ -1408,6 +1418,63 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                     }
                 }
             break;
+
+            case "noiseheads":
+                if(nselect == undefined){
+                    cursorImage = 0
+                    for(var ind = 0; ind < array_length(levelSettings.noiseHeads); ind++){
+                        var xx = struct_get(levelSettings.noiseHeads[ind], "x") * cscale 
+                        var yy = struct_get(levelSettings.noiseHeads[ind], "y") * cscale
+                        var scale = struct_get(levelSettings.noiseHeads[ind], "scale") * cscale
+                        
+                        //if youre hovering over a noisehead
+                        var offset = 100 * scale
+                        if(point_in_rectangle(onX, onY, xx - offset, yy - offset, xx + offset, yy + offset)){
+                            cursorImage = 5
+                            //when clicking on a noisehead
+                            if(mouse_check_button_pressed(mb_left)){
+                                nselect = ind
+                            }
+                            //erase a noisehead from the array
+                            if(mouse_check_button(mb_right)){
+                                array_delete(levelSettings.noiseHeads, ind, 1)
+                                ind -= 1
+                                break
+                            }
+                        }
+                    }
+                    //show eraser
+                    if(mouse_check_button(mb_right)){
+                        cursorImage = 6
+                    }
+                    //add noisehead
+                    if(mouse_check_button_pressed(mb_left) && nselect == undefined){
+                        var nstruct = struct_new([
+                            ["x", onX / cscale],
+                            ["y", onY / cscale],
+                            ["scale", 1]
+                        ])
+                        array_push(levelSettings.noiseHeads, nstruct)
+                        //set the last added noisehead as the current selection
+                        nselect = array_length(levelSettings.noiseHeads) - 1
+                    }
+                }
+                //dragging code
+                else{
+                    cursorImage = 5
+                    //move with cursor
+                    variable_struct_set(levelSettings.noiseHeads[nselect], "x", onX / cscale)
+                    variable_struct_set(levelSettings.noiseHeads[nselect], "y", onY / cscale)
+                    //increase and decrease scale
+                    var scaling =  mouse_wheel_up() - mouse_wheel_down()
+                    var scale = struct_get(levelSettings.noiseHeads[nselect], "scale")
+                    variable_struct_set(levelSettings.noiseHeads[nselect], "scale", (scale + (0.05 * scaling)))
+                    //place noisehead again
+                    if (mouse_check_button_pressed(mb_left)){
+                        nselect = undefined
+                    }
+                }
+            break
         }
     }
 }
@@ -1450,7 +1517,7 @@ with obj_tilemapDrawer
 
 var edChange = keyboard_check_pressed(vk_tab)
 editor_state += edChange;
-if (editor_state > st_resize)
+if (editor_state > st_popup)
 {
     editor_state = -1;
 }

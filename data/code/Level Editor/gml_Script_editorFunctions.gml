@@ -221,9 +221,10 @@ function level_load(argument0) //level name (returns a struct)
     var noisejson = level_noiseheads(argument0)
     var noiseHeads = []
     if(file_exists(noisejson)){
-        noisejson = file_text_open_read(noisejson)
-        noisejson = file_text_read_all(noisejson)
-        noiseHeads = json_parse(noisejson)
+        var noisejsonf = file_text_open_read(noisejson)
+        var noisestring = file_text_read_all(noisejsonf)
+        noiseHeads = json_parse(noisestring)
+        file_text_close(noisejsonf)
     }
 
     struct_set(l, [
@@ -254,6 +255,8 @@ function level_save(argument0, argument1) //level name, level struct
     ini_write_string("data", "titleSong", l.titleSong);
     ini_write_string("data", "titleSongN", l.titleSongN)
     ini_close();
+    var jtext = json_stringify(l.noiseHeads, true)
+    json_save(jtext, level_noiseheads(argument0))
 }
 
 function timeString_get_seconds(argument0)

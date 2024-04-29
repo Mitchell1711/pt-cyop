@@ -488,6 +488,14 @@ windows_add_canvas(100, 150, "valueDropdown");
 wCanvas_open("toolbar", 10, 10);
 wCanvas_open("layerDisplay", 10, 460);
 
+var noisewidth = 720
+var noiseheight = 405
+noiseX = (960 - noisewidth) / 2
+noiseY = (540 - noiseheight) / 2
+_stSet("w_canvas.noiseheads", _wCanvas(noisewidth, noiseheight, "noiseheads"))
+cscale = noisewidth / 960
+nselect = undefined
+currnoisehead = 0
 
 windows_add_canvas(200, 200, "bigDropdown");
 
@@ -501,6 +509,7 @@ st_save = 5;
 st_play = 6;
 st_edit = 7;
 st_resize = 8;
+st_popup = 9
 
 function editorWindowUpdate(argument0)
 {
@@ -520,6 +529,7 @@ function editorWindowUpdate(argument0)
     wCanvas_close("autotileEditButton")
     wCanvas_close("bgPresetDropdown");
     wCanvas_close("bigDropdown");
+    wCanvas_close("noiseheads")
     
     if (argument0 == true)
     {

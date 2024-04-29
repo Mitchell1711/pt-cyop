@@ -2,8 +2,6 @@ draw_set_halign(fa_left);
 draw_set_valign(fa_top);
 draw_set_font(global.editorfont)
 
-
-
 for (var i = 0; i < array_length(w_openCanvas); i ++)
 {
     var c = w_openCanvas[i];
@@ -327,7 +325,8 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                         "Titlecard sprite: " + levelSettings.titlecardSprite,
                         "Title text sprite: " + levelSettings.titleSprite,
                         "Title Jingle: " + levelSettings.titleSong,
-                        "Title Jingle Noise: " + levelSettings.titleSongN
+                        "Title Jingle Noise: " + levelSettings.titleSongN,
+                        "Add Titlecard Noise Heads"
                     ]
                     if (levelSettings.isWorld)
                     {
@@ -438,6 +437,16 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                 }
                 draw_text(2, 2, txt);
             break;
+
+            case "noiseheads":
+                draw_sprite_ext(_spr(levelSettings.titlecardSprite), 0, 0, 0, cscale, cscale, 0, c_white, 1);
+                for(var j = 0; j < array_length(levelSettings.noiseHeads); j++){
+                    var xx = struct_get(levelSettings.noiseHeads[j], "x") * cscale
+                    var yy = struct_get(levelSettings.noiseHeads[j], "y") * cscale
+                    var scale = struct_get(levelSettings.noiseHeads[j], "scale") * cscale
+                    draw_sprite_ext(spr_titlecard_noise, currnoisehead, xx, yy, scale, scale, 0, c_white, 1)
+                }
+            break
         }
         surface_reset_target();
         wCanvas_draw(c, 0.5)
