@@ -13,6 +13,8 @@ layerForce = [];
 
 var insts = struct_get(data, "instances");
 
+var objectStruct = {}
+
 for (var i = 0; i < array_length(data.instances); i ++)
 {
     insData = insts[i]
@@ -21,7 +23,18 @@ for (var i = 0; i < array_length(data.instances); i ++)
     {
         var l = _stGet("insData.layer");
         layerConfirm("Instances", l);
-        var objIndex = _stGet("insData.object")
+
+        //write object indexes to a struct
+        //levels often use a limited pool of objects so this way we don't need to look through all objects for the right index with asset_get_index
+        var objName = _stGet("insData.object")
+        var objIndex = undefined
+        if(variable_struct_exists(objectStruct, objName)){
+            objIndex = variable_struct_get(objectStruct, objName)
+        }
+        else{
+            objIndex = asset_get_index(objName)
+            variable_struct_set(objectStruct, objName, objIndex)
+        }
         //check if object index is valid
         if(objIndex >= 0){
             var ins = instance_create_layer(_stGet("insData.variables.x") - _stGet("data.properties.roomX"), _stGet("insData.variables.y") - _stGet("data.properties.roomY"), layer_get_id(layerFormat("Instances", l)), objIndex)

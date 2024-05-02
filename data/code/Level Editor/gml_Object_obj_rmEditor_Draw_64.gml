@@ -96,7 +96,7 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                     draw_set_alpha(1)
                     
                     
-                    var objSpr = object_get_sprite(objs[j]);
+                    var objSpr = object_get_sprite(asset_get_index(objs[j]));
                     if !sprite_exists(objSpr)
                         objSpr = _spr("sprite_preview");
                     var sXoff = sprite_get_xoffset(objSpr);

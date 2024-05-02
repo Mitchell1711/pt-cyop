@@ -924,8 +924,6 @@ function data_compatibility(argument0)
             }
         case 5:
             var objid = 0
-            var prevobjid = 0
-            var newobjid = 0
             var instancelist = struct_get(_temp, "instances")
             for(var i = 0; i < array_length(instancelist); i++){
                 //get object id from room json
@@ -933,11 +931,7 @@ function data_compatibility(argument0)
                 //prevent array index crash
                 if(objid <= array_length(global.objectMap)){
                     //if statement so we dont need to look for the same updated object id again
-                    if(objid != prevobjid){
-                        newobjid = global.objectMap[objid]
-                        newobjid = asset_get_index(newobjid)
-                    }
-                    prevobjid = objid
+                    newobjid = global.objectMap[objid]
                     //update the loaded roomdata with the new object id
                     variable_struct_set(instancelist[i], "object", newobjid)
                     //grab variables struct from object
@@ -993,20 +987,22 @@ function revert_object_ids(argument0){ //json location
         exit;
     }
     var instancelist = struct_get(data, "instances")
-    var objid = 0
-    var prevobjid = 0
-    var newobjid = 0
+    var objectStruct = {}
+    var objName = ""
+    var objIndex = undefined
     var todelete = []
     var foundobject = false
     for(var i = 0; i < array_length(instancelist); i++){
-        objid = struct_get(instancelist[i], "object")
-        objname = object_get_name(objid)
-        //dont redo the search if we're searching for the same object as last time
-        if(objid != prevobjid){
+        objName = struct_get(instancelist[i], "object")
+        //dont redo the search if we're searching for an object we already found
+        if(variable_struct_exists(objectStruct, objName)){
+            objIndex = variable_struct_get(objectStruct, objName)
+        }
+        else{
             for(var j = 0; j < array_length(global.objectMap); j++){
                 //write the id if the object name is the same
-                if(objname == global.objectMap[j]){
-                    newobjid = j
+                if(objName == global.objectMap[j]){
+                    objIndex = j
                     foundobject = true
                     break
                 }
@@ -1014,7 +1010,7 @@ function revert_object_ids(argument0){ //json location
             }
         }
         if(foundobject){
-            variable_struct_set(instancelist[i], "object", newobjid)
+            variable_struct_set(instancelist[i], "object", objIndex)
         }
         //if object wasnt found remove it later
         else{

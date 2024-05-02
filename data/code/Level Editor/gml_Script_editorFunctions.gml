@@ -132,7 +132,7 @@ function instance_update_variables(argument0, argument1)
     var ins = argument0;
     var insData = argument1;
     var varNames = variable_struct_get_names(struct_get(insData, "variables"));
-    var isQBlock = array_value_exists(variable_struct_get_names(global.objectData.questionBlocks), object_get_name(insData.object));
+    var isQBlock = array_value_exists(variable_struct_get_names(global.objectData.questionBlocks), insData.object);
     for (var j = 0; j < array_length(varNames); j ++)
     {
         var val = struct_get(struct_get(insData, "variables"), varNames[j]);
@@ -141,7 +141,7 @@ function instance_update_variables(argument0, argument1)
         
         if (isQBlock)
         {
-            if (struct_get(global.objectData.questionBlocks, object_get_name(insData.object)) == varNames[j])
+            if (struct_get(global.objectData.questionBlocks, insData.object) == varNames[j])
             {
                 ins.absorbed = varValue_ressolve(val);
             }
@@ -165,7 +165,7 @@ function instance_getVarList(argument0, argument1, argument2) //object, instance
     var objLists = variable_struct_get_names(od.objectVariables);
     for (var i = 0; i < array_length(objLists) and i != -1; i ++)
     {
-        var parent = object_get_parent(obj)
+        var parent = object_get_parent(asset_get_index(obj))
         var parentPresent = false;
         while (parent != -1 and !parentPresent)
         {
@@ -173,7 +173,7 @@ function instance_getVarList(argument0, argument1, argument2) //object, instance
                 parentPresent = true;
             parent = object_get_parent(parent);
         }
-        if (string_pos("|" + object_get_name(obj) + "|", objLists[i]) != 0 or parentPresent or objLists[i] == "all")
+        if (string_pos("|" + obj + "|", objLists[i]) != 0 or parentPresent or objLists[i] == "all")
         {
             var ov = struct_get(od.objectVariables, objLists[i]);
             for (var j = 0; j < array_length(ov); j ++)
@@ -280,12 +280,12 @@ function timeString_get_string(argument0)
 
 function object_compareToList(argument0, argument1) //object index
 {
-    var objName = object_get_name(argument0);
+    var objName = argument0;
     
     if (array_value_exists(argument1, objName))
         return true;
     
-    var parent = object_get_parent(argument0);
+    var parent = object_get_parent(asset_get_index(argument0));
     var parentPresent = false;
     
     
@@ -480,8 +480,8 @@ function loadOldLevel(argument0) //path
     }*/
     
     data = sgData;
-    addInst(obj_doorA, dx - 16, dy + 32 * 3)
-    addInst(obj_exitgate, dx, dy);
+    addInst("obj_doorA", dx - 16, dy + 32 * 3)
+    addInst("obj_exitgate", dx, dy);
     
     
     

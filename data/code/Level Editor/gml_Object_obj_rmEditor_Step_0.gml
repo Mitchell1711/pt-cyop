@@ -33,7 +33,7 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
             switch cursorMode
             {
                 case 0:
-                    var objSpr = object_get_sprite(objSelected);
+                    var objSpr = object_get_sprite(asset_get_index(objSelected));
                     
                     objFlipX += keyboard_check_pressed(ord("X"));
                     objFlipY += keyboard_check_pressed(ord("Y"));
@@ -51,7 +51,7 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                             var cand = ds_list_find_value(candidates, j);
                             if (layer_instances == _stGet("data.instances[" + string(cand.instID) + "].layer"))
                             {
-                                if (array_value_exists(variable_struct_get_names(global.objectData.questionBlocks), object_get_name(_stGet("data.instances[" + string(cand.instID) + "].object"))))
+                                if (array_value_exists(variable_struct_get_names(global.objectData.questionBlocks), _stGet("data.instances[" + string(cand.instID) + "].object")))
                                 {
                                     absorber = cand;
                                 }
@@ -67,7 +67,7 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                         if (object_compareToList(objSelected, global.objectData.snapToGround))
                         {
                             y += sprite_get_yoffset(objSpr) - sprite_get_bbox_bottom(objSpr) + gridSize;
-                            var objSpr = object_get_sprite(objSelected);
+                            var objSpr = object_get_sprite(asset_get_index(objSelected));
                             var objOff = sprite_get_yoffset(objSpr)
                             var objBord = [sprite_get_bbox_top(objSpr), sprite_get_bbox_bottom(objSpr)]
                             var colls = ds_list_create();
@@ -109,7 +109,7 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                         y = mouse_y;
                         if (keyboard_check(vk_control))
                         {
-                            var objSpr = object_get_sprite(objSelected);
+                            var objSpr = object_get_sprite(asset_get_index(objSelected));
                             var objOff = sprite_get_yoffset(objSpr)
                             var objBord = [sprite_get_bbox_top(objSpr), sprite_get_bbox_bottom(objSpr)]
                             var cInst = collision_rectangle(x - gridSize / 2, y - objOff + objBord[0], x + gridSize / 2, y - objOff + objBord[1], obj_editorInst, true, true)
@@ -135,9 +135,9 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                     {
                         if (mouse_check_button(mb_left) and (onGridPos[0] != prevGridPos[0] or onGridPos[1] != prevGridPos[1]))
                         {
-                            if (objSelected == obj_exitgate)
+                            if (objSelected == "obj_exitgate")
                             {
-                                addInst(obj_doorA, x - 16, y + 32 * 3)
+                                addInst("obj_doorA", x - 16, y + 32 * 3)
                             }
                             var o = addInst(objSelected, x, y, [])
                             
@@ -151,8 +151,8 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / w_scale, cursorY / w_scale))
                     {
                         if (mouse_check_button_pressed(mb_left))
                         {
-                            var abName = struct_get(global.objectData.questionBlocks, object_get_name(_stGet("data.instances[" + string(absorber.instID) + "].object")))
-                            inst_setVar(absorber.instID, abName, object_get_name(objSelected));
+                            var abName = struct_get(global.objectData.questionBlocks, _stGet("data.instances[" + string(absorber.instID) + "].object"))
+                            inst_setVar(absorber.instID, abName, objSelected);
                             instance_update_variables(absorber, _stGet("data.instances[" + string(absorber.instID) + "]"));
                         }
                     }
@@ -881,7 +881,7 @@ for (var i = 0; i < array_length(w_openCanvas); i ++)
                     var objInd = (objCoord[0] % og.columns) + objCoord[1] * og.columns;
                     if (objInd < array_length(objs))
                     {
-                        cursorNotice = object_get_name(objs[objInd]);
+                        cursorNotice = objs[objInd];
                         if (mouse_check_button_pressed(mb_left))
                         {
                             objSelected = objs[objInd];

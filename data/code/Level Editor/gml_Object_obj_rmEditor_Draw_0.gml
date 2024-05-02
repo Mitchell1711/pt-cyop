@@ -10,7 +10,7 @@ if (w_isOnCanvas(w_openCanvas[0], cursorX / 2, cursorY / 2))
                     var yy = y;
                     var xs = 1 - 2 * objFlipX;
                     var ys = 1 - 2 * objFlipY;
-                    var objSpr = object_get_sprite(objSelected);
+                    var objSpr = object_get_sprite(asset_get_index(objSelected));
                     
                     if (objFlipX)
                     {

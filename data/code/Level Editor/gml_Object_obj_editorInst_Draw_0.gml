@@ -23,7 +23,8 @@ if (variable_instance_exists(id, "escape"))
         draw_sprite_ext(spr_johnescapeenemy, 6, (bbox_right + bbox_left) / 2, bbox_bottom - sprite_get_height(sprite_index), 1, 1, 0, c_white, 0.5 * image_alpha);
 }
 
-draw_sprite_ext(sprite_index, image_index, xx, yy, xscale, yscale, image_angle, image_blend, image_alpha);
+if(sprite_exists(sprite_index))
+    draw_sprite_ext(sprite_index, image_index, xx, yy, xscale, yscale, image_angle, image_blend, image_alpha);
 
 if (absorbed != noone)
 {
