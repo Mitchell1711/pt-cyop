@@ -19,8 +19,7 @@ if (!is_string(rm))
 }
 else
 {
-    customSong_destroy_all()
-    loadCustomLevel(global.levelName);
+    loadCustomLevel(global.levelName, true);
 }
 var _d = "A"
 if (rm == boss_pizzaface)
