@@ -47,11 +47,28 @@ if instance_exists(obj_player)
             var lvl = global.levelName;
             var rm = tRoom;
             
-            if (rm == global.currentRoom and lvl == global.currentLevel)
+            //handles room reloading for transition that go to the same room
+            if (rm == global.currentRoom && lvl == global.currentLevel)
             {
-                with obj_player
-                {
-                    event_perform(ev_other, ev_room_start);
+                //reloads all objects in the room
+                if(reloadSameRoom){
+                    prepareCustomLevel(global.roomData, global.currentRoom);
+
+                    with (obj_player)
+                    {
+                        if (state == (7 << 0) || state == (152 << 0))
+                        {
+                            visible = true
+                            state = (0 << 0)
+                        }
+                    }
+                }
+                //just restarts the room without reloading objects
+                else{
+                    with obj_player
+                    {
+                        event_perform(ev_other, ev_room_start);
+                    }
                 }
                 exit;
             }
