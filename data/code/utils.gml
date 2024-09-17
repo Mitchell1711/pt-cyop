@@ -1375,3 +1375,14 @@ function camera_get_limits(argument0, argument1, argument2, argument3)
     }
     return ([clamp(argument0, limX[0], limX[1] - argument2), clamp(argument1, limY[0], limY[1] - argument3)])
 }
+
+function array_contains(argument0, argument1){
+    var result = false
+    for(var i = 0; i < array_length(argument0); i++){
+        if(argument0[i] == argument1){
+            result = true
+            break
+        }
+    }
+    return result
+}
