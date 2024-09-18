@@ -12,5 +12,5 @@ saveslot = 0
 doingstatestuff = false
 spaceblockstate = 0
 savedmodfolder = global.modFolder
-blacklistedglobals = ["roomData"]
+blacklistedglobals = ["roomData", "savestatetype"]
 savesystemnames = ["baddieroom", "escaperoom", "saveroom"]

@@ -12,8 +12,8 @@ function scr_init_input_practice() //gml_Script_scr_init_input_practice
     slot9 = 0
     slot0 = 0
     savestate = 0
-    savestatebasic = 0
-    loadstatebasic = 0
+    savestatefast = 0
+    loadstatefast = 0
 }
 
 //check for pressed input
@@ -32,8 +32,8 @@ function scr_getinput_practice() //gml_Script_scr_getinput_practice
         slot9 = keyboard_check_pressed(global.slot9)
         slot0 = keyboard_check_pressed(global.slot0)
         savestate = keyboard_check(global.savestate)
-        savestatebasic = keyboard_check_pressed(global.savestatebasic)
-        loadstatebasic = keyboard_check_pressed(global.loadstatebasic)
+        savestatefast = keyboard_check_pressed(global.savestatefast)
+        loadstatefast = keyboard_check_pressed(global.loadstatefast)
     }
 }
 
@@ -52,8 +52,9 @@ function scr_initpracticeinput(argument0) //gml_Script_scr_initpracticeinput
     global.slot9 = ini_read_string("DebugKeys", "slot9", 57)
     global.slot0 = ini_read_string("DebugKeys", "slot0", 48)
     global.savestate = ini_read_string("DebugKeys", "savestate", 16)
-    global.savestatebasic = ini_read_string("DebugKeys", "savestatebasic", 49)
-    global.loadstatebasic = ini_read_string("DebugKeys", "loadstatebasic", 50)
+    global.savestatefast = ini_read_string("DebugKeys", "savestatefast", 49)
+    global.loadstatefast = ini_read_string("DebugKeys", "loadstatefast", 50)
+    global.savestatetype = ini_read_string("DebugSettings", "savestatetype", "fancy")
     ini_close()
 }
 
