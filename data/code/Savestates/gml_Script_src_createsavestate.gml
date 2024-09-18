@@ -62,6 +62,14 @@ function createsavestate(){ //slot to save
 
             //push struct to array
             array_push(objects, objectinfo)
+
+            //prevent loading in the solids of the oneway block and monster gate
+            if(object_index == obj_onewaybigblock){
+                array_push(dontload, solid_inst)
+            }
+            else if(object_index == obj_monstergate){
+                array_push(dontload, solidID)
+            }
         }
     }
 
@@ -69,9 +77,7 @@ function createsavestate(){ //slot to save
     varnames = variable_instance_get_names(global)
     
     //get globals and savesystem variables
-    //blacklisted var is for global variables you dont want to be savestated
-    var blacklisted = ["roomData"]
-    var globals = saveGlobals(varnames, array_concat(savesystemnames, blacklisted))
+    var globals = saveGlobals(varnames, array_concat(savesystemnames, blacklistedglobals))
     var savesystem = saveGlobals(savesystemnames)
 
     savestates[saveslot] = {

@@ -1,6 +1,6 @@
 function loadstate(){
     var save = savestates[saveslot]
-    if(array_length(variable_struct_get_names(save)) == 0){
+    if(save == undefined){
         if(saveslot < 10)
             create_transformation_tip("Failed to load slot "+string(saveslot))
         else
@@ -41,6 +41,13 @@ function loadstatevariables()
     {
         var obj = objects[i]
         var obj_id = struct_get(obj, "obj_id")
+
+        //dont load in objects added to the dontload list
+        var dontload = struct_get(save, "dontload")
+        if(array_contains(dontload, obj_id)){
+            continue
+        }
+        
          //if object id is a string it means its an object spawned from the json
          //I need to convert this string back to an object id by looking it up in the instancemanager
         if is_string(obj_id)
@@ -75,7 +82,10 @@ function loadstatevariables()
             //load object variables
             var vars = struct_get(obj, "variables")
             for (var j = 0; j < array_length(vars); j++){
-                variable_instance_set(id, vars[j][0], vars[j][1])
+                //dont load in onewayblock/monstergate solid references since they wont match up anyways
+                if(vars[j][0] != "solid_inst" && vars[j][0] != "solidID"){
+                    variable_instance_set(id, vars[j][0], vars[j][1])
+                }
             }
             //load alarms
             var alarms = struct_get(obj, "alarms")
