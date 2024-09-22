@@ -95,6 +95,10 @@ if (key_jump)
             {
                 global.hubLevel = towerList[t][2];
             }
+
+            global.file_minutes = 0
+            global.file_seconds = 0
+            
             preloadCustomLevel(towerList[t][2]);
             
             towerWindowsUpdate(false);
