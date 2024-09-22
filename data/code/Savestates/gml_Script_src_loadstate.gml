@@ -54,16 +54,16 @@ function loadstatevariables()
         if(array_contains(dontload, obj_id)){
             continue
         }
+
+        //spawn in object if its missing, dont spawn in objects handled by the levelloader
+        if(!is_string(obj_id) && !instance_exists(obj_id)){
+            obj_id = instance_create(struct_get(obj, "x"), struct_get(obj, "y"), struct_get(obj, "object_index"))
+        }
         
          //if object id is a string it means its an object spawned from the json
          //I need to convert this string back to an object id by looking it up in the instancemanager
         if is_string(obj_id)
             obj_id = struct_get(global.instanceManager, obj_id)
-
-        //spawn in object if its missing
-        if(!instance_exists(obj_id)){
-            obj_id = instance_create(struct_get(obj, "x"), struct_get(obj, "y"), struct_get(obj, "object_index"))
-        }
 
         //assign all saved variables to the object
         with(obj_id){
