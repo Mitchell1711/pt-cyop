@@ -8,6 +8,8 @@ function createsavestate(){ //slot to save
     savedmodfolder = global.modFolder
     //save objects and their variables
     with(all){
+        //mark as dontdestroy
+        dontdestroy = true
         //if statement with stuff you dont want to savestate
         if (object_index != obj_practiceTool && object_index != obj_music && object_index != obj_customAudio 
         && object_index != obj_levelLoader && object_index != obj_customBG && object_index != obj_tilemapDrawer

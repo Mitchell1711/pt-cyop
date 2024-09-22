@@ -1,4 +1,4 @@
-if(room != rmCustomLevel){
+if(room != rmCustomLevel || room != timesuproom){
     return;
 }
 scr_getinput_practice()
@@ -44,9 +44,9 @@ if(global.savestatetype == "fancy"){
 //input handling for fast savestates (single slot)
 else if(global.savestatetype == "fast"){
     if (!doingstatestuff && !obj_pause.pause){
-        if(savestatebasic)
+        if(savestatefast)
             createsavestate()
-        else if(loadstatebasic)
+        else if(loadstatefast)
             loadstate()
     }
 }

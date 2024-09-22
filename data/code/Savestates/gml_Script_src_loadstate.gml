@@ -24,6 +24,13 @@ function loadstate(){
         }
     }
 
+    //get rid of persistent objects if they werent saved
+    with(all){
+        if(persistent && !variable_instance_exists(id, "dontdestroy")){
+            instance_destroy()
+        }
+    }
+
     //(re)load the room
     prepareCustomLevel(get_roomData(global.currentRoom), global.currentRoom)
     //3 frame delay for loading objects because cyop is slow
