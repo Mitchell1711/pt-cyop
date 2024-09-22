@@ -1,4 +1,4 @@
-if(room != rmCustomLevel || room != timesuproom){
+if(!global.dosavestates || (room != rmCustomLevel && room != timesuproom)){
     return;
 }
 scr_getinput_practice()
