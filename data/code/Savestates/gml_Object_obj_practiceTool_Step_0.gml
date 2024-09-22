@@ -1,4 +1,4 @@
-if(!global.dosavestates || (room != rmCustomLevel && room != timesuproom)){
+if((room != rmCustomLevel && room != timesuproom) || !global.dosavestates || doingstatestuff || obj_pause.pause){
     return;
 }
 scr_getinput_practice()
@@ -31,22 +31,23 @@ if(global.savestatetype == "fancy"){
     else if slot0
         saveslot = 0
 
-    if (!doingstatestuff && !obj_pause.pause){
-        if loadorsave
-        {
-            if savestate
-                createsavestate()
-            else
-                loadstate()
+    if loadorsave
+    {
+        if savestate{
+            createsavestate()
+        }
+        else{
+            loadstate()
         }
     }
 }
 //input handling for fast savestates (single slot)
 else if(global.savestatetype == "fast"){
-    if (!doingstatestuff && !obj_pause.pause){
-        if(savestatefast)
-            createsavestate()
-        else if(loadstatefast)
-            loadstate()
+    saveslot = 1
+    if(savestatefast){
+        createsavestate()
+    }
+    else if(loadstatefast){
+        loadstate()
     }
 }
