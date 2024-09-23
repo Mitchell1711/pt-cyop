@@ -14,6 +14,8 @@ function scr_init_input_practice() //gml_Script_scr_init_input_practice
     savestate = 0
     savestatefast = 0
     loadstatefast = 0
+    reloadroom = 0
+    last_room = 0
 }
 
 //check for pressed input
@@ -34,6 +36,8 @@ function scr_getinput_practice() //gml_Script_scr_getinput_practice
         savestate = keyboard_check(global.savestate)
         savestatefast = keyboard_check_pressed(global.savestatefast)
         loadstatefast = keyboard_check_pressed(global.loadstatefast)
+        reloadroom = keyboard_check_pressed(global.reloadroom)
+        last_room = keyboard_check_pressed(global.last_room)
     }
 }
 
@@ -55,6 +59,8 @@ function scr_initpracticeinput(argument0) //gml_Script_scr_initpracticeinput
     global.savestatefast = ini_read_string("DebugKeys", "savestatefast", 49)
     global.loadstatefast = ini_read_string("DebugKeys", "loadstatefast", 50)
     global.savestatetype = ini_read_string("DebugSettings", "savestatetype", "fancy")
+    global.reloadroom = ini_read_string("DebugKeys", "reloadroom", 112)
+    global.last_room = ini_read_string("DebugKeys", "lastroom", 114)
     ini_close()
 }
 

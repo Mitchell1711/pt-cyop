@@ -30,7 +30,9 @@ function loadstate(){
             instance_destroy()
         }
     }
-
+    
+    //dont create a room start state (used for saveslot 10) when loading a savestate
+    createRoomStartState = false
     //(re)load the room
     prepareCustomLevel(get_roomData(global.currentRoom), global.currentRoom)
     //3 frame delay for loading objects because cyop is slow
@@ -87,11 +89,15 @@ function loadstatevariables()
             visible = struct_get(obj, "visible")
 
             //load object variables
-            var vars = struct_get(obj, "variables")
-            for (var j = 0; j < array_length(vars); j++){
-                //dont load in onewayblock/monstergate solid references since they wont match up anyways
-                if(vars[j][0] != "solid_inst" && vars[j][0] != "solidID"){
-                    variable_instance_set(id, vars[j][0], vars[j][1])
+            //dont load in followcharacter variables because theyre really jank and randomly cause crashes
+            if (!object_is_ancestor(object_index, obj_followcharacter))
+			{
+                var vars = struct_get(obj, "variables")
+                for (var j = 0; j < array_length(vars); j++){
+                    //dont load in onewayblock/monstergate solid references since they wont match up anyways
+                    if(vars[j][0] != "solid_inst" && vars[j][0] != "solidID"){
+                        variable_instance_set(id, vars[j][0], vars[j][1])
+                    }
                 }
             }
             //load alarms

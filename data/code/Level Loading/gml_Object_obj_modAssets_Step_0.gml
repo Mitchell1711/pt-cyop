@@ -8,10 +8,11 @@ if keyboard_check_pressed(vk_f6) and (global.editingLevel or keyboard_check(vk_c
     }
 }
 
-if keyboard_check_pressed(vk_f3)
-{
-    convert_to_hexstring();
-}
+//remove this piece of debug code sine its not really used for anything and gets in the way of editor savestate binds
+// if keyboard_check_pressed(vk_f3)
+// {
+//     convert_to_hexstring();
+// }
 
 with obj_player1
 {

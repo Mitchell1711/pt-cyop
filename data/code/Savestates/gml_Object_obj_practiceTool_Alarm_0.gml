@@ -9,4 +9,10 @@ loadstatevariables()
 //update spaceblock state after objects are loaded back in
 global.spaceblockswitch = spaceblockstate
 
+if(saveslot < 10 && global.savestatetype == "fancy")
+    create_transformation_tip("Loaded slot "+string(saveslot))
+else if (saveslot >= 10 || global.savestatetype == "fast")
+    create_transformation_tip("Loaded state")
+
+createRoomStartState = true
 doingstatestuff = false

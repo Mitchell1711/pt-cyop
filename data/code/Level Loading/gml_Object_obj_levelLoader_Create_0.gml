@@ -145,4 +145,12 @@ if (global.levelName == global.hubLevel)
         backtohubroom = rmModMenu;
     }
 }
+
+if(room == rmCustomLevel && global.dosavestates){
+    with(obj_practiceTool){
+        if(createRoomStartState){
+            alarm[1] = 2
+        }
+    }
+}
 //instance_create_layer(obj_player1, layer_get_id("Instances_1"), 100, 100);

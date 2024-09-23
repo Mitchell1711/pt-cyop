@@ -10,6 +10,7 @@ scr_initpracticeinput()
 savestates = array_create(12, undefined)
 saveslot = 0
 doingstatestuff = false
+createRoomStartState = true
 spaceblockstate = 0
 savedmodfolder = global.modFolder
 blacklistedglobals = ["roomData", "savestatetype"]

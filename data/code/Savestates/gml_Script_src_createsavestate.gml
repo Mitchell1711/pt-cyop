@@ -92,7 +92,7 @@ function createsavestate(){ //slot to save
 
     if(saveslot < 10 && global.savestatetype == "fancy")
         create_transformation_tip("Saved state to slot "+string(saveslot))
-    else if (global.savestatetype == "fast")
+    else if (saveslot < 10 && global.savestatetype == "fast")
         create_transformation_tip("Saved state")
     
     doingstatestuff = false
